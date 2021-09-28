@@ -3,6 +3,9 @@ uuid = "7cf97d43-f660-4df7-8c80-1d1d558131ef"
 authors = ["Shoichiro Tsutsui"]
 version = "0.1.0"
 
+[deps]
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+
 [compat]
 julia = "1.5"
 
