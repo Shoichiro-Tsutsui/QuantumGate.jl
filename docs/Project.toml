@@ -1,0 +1,3 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+QuantumGate = "7cf97d43-f660-4df7-8c80-1d1d558131ef"
