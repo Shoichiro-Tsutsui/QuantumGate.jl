@@ -9,6 +9,8 @@ using SparseArrays
     @test σˣ*σʸ - σʸ*σˣ == 2im*σᶻ
     @test σʸ*σᶻ - σᶻ*σʸ == 2im*σˣ
     @test σᶻ*σˣ - σˣ*σᶻ == 2im*σʸ
+    @test σ⁰ == P⁰ + P¹
+    @test σᶻ == P⁰ - P¹
 end
 
 @testset "Kronecker product" begin
@@ -45,8 +47,20 @@ end
                                     0.0 0.0 0.0 1.0;
                                     0.0 0.0 1.0 0.0
                                 ])
-    @test CNOTgate(1, 2, 2) == P₀ ⊗ σ⁰ + P₁ ⊗ σˣ
-    @test CNOTgate(1, 2, 3) == P₀ ⊗ σ⁰ ⊗ σ⁰ + P₁ ⊗ σˣ ⊗ σ⁰
-    @test CNOTgate(1, 3, 3) == P₀ ⊗ σ⁰ ⊗ σ⁰ + P₁ ⊗ σ⁰ ⊗ σˣ
-    @test CNOTgate(3, 1, 3) == σ⁰ ⊗ σ⁰ ⊗ P₀ + σˣ ⊗ σ⁰ ⊗ P₁
+    @test CNOTgate(1, 2, 2) == P⁰ ⊗ σ⁰ + P¹ ⊗ σˣ
+    @test CNOTgate(1, 2, 3) == P⁰ ⊗ σ⁰ ⊗ σ⁰ + P¹ ⊗ σˣ ⊗ σ⁰
+    @test CNOTgate(1, 3, 3) == P⁰ ⊗ σ⁰ ⊗ σ⁰ + P¹ ⊗ σ⁰ ⊗ σˣ
+    @test CNOTgate(3, 1, 3) == σ⁰ ⊗ σ⁰ ⊗ P⁰ + σˣ ⊗ σ⁰ ⊗ P¹
+end
+
+@testset "SWAP gate" begin
+    @test SWAPgate(1, 2, 2) == sparse([
+                                    1.0+0.0im 0.0 0.0 0.0;
+                                    0.0 0.0 1.0 0.0;
+                                    0.0 1.0 0.0 0.0;
+                                    0.0 0.0 0.0 1.0
+                                ])
+
+    @test SWAPgate(1, 2, 2) == SWAPgate(2, 1, 2)
+    @test SWAPgate(1, 3, 3) == SWAPgate(3, 1, 3)
 end

@@ -60,9 +60,9 @@ julia> σᶻ
 """
 const σᶻ = sparse([1.0+0.0im 0.0; 0.0 -1.0+0.0im])
 
-const P₀ = sparse([1.0+0.0im 0.0; 0.0 0.0])
+const P⁰ = sparse([1.0+0.0im 0.0; 0.0 0.0])
 
-const P₁ = sparse([0.0 0.0; 0.0 1.0+0.0im])
+const P¹ = sparse([0.0 0.0; 0.0 1.0+0.0im])
 
 const Had = sparse([1.0+0.0im 1.0; 1.0 -1.0])/sqrt(2)
 

@@ -57,25 +57,35 @@ function Rᶻgate(cite::Int, N::Int, θ::Float64)
 end
 
 
-function CNOTgate(control, target, N)
-    A = single_qubit_gate(control, N, P₀)
+function controlled_Ugate(control::Int, target::Int, N::Int, U)
+    A = single_qubit_gate(control, N, P⁰)
 
     if control == 1
-        B = P₁
+        B = P¹
     elseif target == 1
-        B = σˣ
+        B = U
     else
         B = σ⁰
     end
 
     for i in 2:N
         if control == i
-            B = B ⊗ P₁
+            B = B ⊗ P¹
         elseif target == i
-            B = B ⊗ σˣ
+            B = B ⊗ U
         else
             B = B ⊗ σ⁰
         end
     end
     return A + B
+end
+
+
+function CNOTgate(control::Int, target::Int, N::Int)
+    controlled_Ugate(control, target, N, σˣ)
+end
+
+
+function SWAPgate(i, j, N)
+    CNOTgate(i, j, N) * CNOTgate(j, i, N) * CNOTgate(i, j, N)
 end
