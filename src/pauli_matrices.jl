@@ -59,3 +59,25 @@ julia> σᶻ
 ```
 """
 const σᶻ = sparse([1.0+0.0im 0.0; 0.0 -1.0+0.0im])
+
+const P₀ = sparse([1.0+0.0im 0.0; 0.0 0.0])
+
+const P₁ = sparse([0.0 0.0; 0.0 1.0+0.0im])
+
+const Had = sparse([1.0+0.0im 1.0; 1.0 -1.0])/sqrt(2)
+
+const Smat = sparse([1.0+0.0im 0.0; 0.0 1.0im])
+
+const Tmat = sparse([1.0+0.0im 0.0; 0.0 exp(1.0im*π/4)])
+
+function Rˣmat(θ)
+    sparse([cos(θ/2) -1.0im*sin(θ/2); -1.0im*sin(θ/2) cos(θ/2)])
+end
+
+function Rʸmat(θ)
+    sparse([cos(θ/2)+0.0im -sin(θ/2); sin(θ/2) cos(θ/2)])
+end
+
+function Rᶻmat(θ)
+    sparse([exp(-1.0im*θ/2) 0.0; 0.0 exp(1.0im*θ/2)])
+end
