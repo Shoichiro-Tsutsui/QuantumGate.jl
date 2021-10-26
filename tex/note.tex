@@ -1,0 +1,648 @@
+\documentclass[]{ltjsarticle}
+\usepackage{luatexja}
+
+
+\usepackage{amsmath, amssymb, latexsym, mathrsfs, bm}
+\usepackage[braket, qm]{qcircuit}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage[svgnames]{xcolor}
+\usepackage[
+     colorlinks        = true,
+     unicode           = true,
+     pdfstartview      = FitV,
+     linktocpage       = true,
+     linkcolor         = OrangeRed,
+     citecolor         = MediumSeaGreen,
+     urlcolor          = RoyalBlue,
+     bookmarks         = true,
+     bookmarksnumbered = true,
+     pdftitle={},
+     pdfauthor={筒井翔一朗}
+]{hyperref}
+
+
+%% Numerical constats
+\newcommand{\e}{\mathrm{e}}
+\newcommand{\im}{\mathrm{i}\mkern1mu}
+
+
+%% Derivative
+\newcommand{\del}{\partial}
+
+
+%% Mathcal
+\newcommand{\calD}{\mathcal{D}}
+
+
+%% Hat (used for operator on Hilbert space)
+\newcommand{\hH}{\hat{H}}
+
+
+%% Mathematical symbols
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\Tprod}{\mathrm{T}}
+\renewcommand{\Re}{\mathrm{Re}}
+\renewcommand{\Im}{\mathrm{Im}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+
+\title{量子計算}
+
+
+\author{筒井翔一朗}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\maketitle
+\tableofcontents
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Notation}
+Qubit
+\begin{align}
+    \ket{0} 
+    = 
+    \begin{pmatrix}
+    1 \\ 0    
+    \end{pmatrix}, \quad 
+    %
+    \ket{1} 
+    = 
+    \begin{pmatrix}
+    0 \\ 1    
+    \end{pmatrix}, \quad 
+\end{align}
+
+Kronecker積
+\begin{align}
+    A \otimes B 
+    \equiv
+    \begin{pmatrix}
+        a_{11}B & \dots & a_{1N}B \\
+        \vdots & \ddots & \vdots \\
+        a_{N1}B & \dots & a_{NN}B
+    \end{pmatrix}
+\end{align}
+
+Hadamardゲート
+\begin{align}
+    H 
+    = 
+    \frac{1}{\sqrt{2}}
+    \begin{pmatrix}
+        1 & 1 \\
+        1 & -1
+    \end{pmatrix}
+\end{align}
+
+整数$k$の2進数表記
+\begin{align}
+    (k)_2 = i_1 i_2 \cdots, \quad i_n = 0, 1
+\end{align}
+
+例
+\begin{align}
+    (0)_2 &= 0 \\
+    (1)_2 &= 1 \\
+    (2)_2 &= 10 \\
+    (3)_2 &= 11 \\
+    (4)_2 &= 100 \\
+    (5)_2 &= 101 \\
+    (6)_2 &= 110 \\
+    (7)_2 &= 111 \\
+    (8)_2 &= 1000 \\
+    (9)_2 &= 1001 \\
+    (10)_2 &= 1010 \\
+    (11)_2 &= 1011 \\
+    (12)_2 &= 1100 \\
+    (13)_2 &= 1101
+\end{align}
+
+小数を含む2進数表記
+\begin{align}
+    (k)_2 
+    =
+    k_1 \cdots k_{l-1}. k_l \cdots k_n
+    =
+    \cdots + k_{l-1} 2^{0}
+    +
+    \frac{k_l}{2^1}
+    +
+    \frac{k_{l+1}}{2^2}
+    +
+    \cdots
+    +
+    \frac{k_n}{2^{n-l+1}}
+\end{align}
+
+
+\section{基本的な計算結果}
+\begin{align}
+    H \ket{0}
+    &=
+    \frac{1}{\sqrt{2}}
+    \begin{pmatrix}
+        1 & 1 \\
+        1 & -1
+    \end{pmatrix}
+    \begin{pmatrix}
+        1 \\ 0
+    \end{pmatrix}
+    =
+    \frac{1}{\sqrt{2}}
+    \begin{pmatrix}
+        1 \\ 1
+    \end{pmatrix}
+    =
+    \frac{\ket{0} + \ket{1}}{\sqrt{2}} \\
+    %
+    H \ket{1}
+    &=
+    \frac{1}{\sqrt{2}}
+    \begin{pmatrix}
+        1 & 1 \\
+        1 & -1
+    \end{pmatrix}
+    \begin{pmatrix}
+        0 \\ 1
+    \end{pmatrix}
+    =
+    \frac{1}{\sqrt{2}}
+    \begin{pmatrix}
+        1 \\ -1
+    \end{pmatrix}
+    =
+    \frac{\ket{0} - \ket{1}}{\sqrt{2}}
+\end{align}
+
+10進数と2進数の関係。
+$(k)_2 = k_1 k_2 \cdots k_n$のとき
+\begin{align}
+    k 
+    = 
+    k_1 2^{n-1}
+    +
+    k_2 2^{n-2}
+    +
+    \cdots
+    +
+    k_n 2^0
+\end{align}
+例えば、
+\begin{align}
+    9 
+    = 
+    1 \times 2^{3}
+    +
+    0 \times 2^{2}
+    +
+    0 \times 2^{1}
+    +
+    1 \times 2^0
+\end{align}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{基本的な量子アルゴリズム}
+
+\subsection{アダマールテスト}
+$U$をユニタリー演算子とする。
+以下のゲート
+\[ 
+    \Qcircuit 
+    @C=1em @R=1em 
+    {
+        \lstick{\ket{0}}              & \gate{H} & \ctrl{1} & \gate{H} & \meter \\
+        \lstick{\ket{\psi_\text{in}}} & \qw      & \gate{U} & \qw      & \rstick{\ket{\psi_\text{out}}}\qw
+    }
+\]
+を考える。
+control U gateを式で表すと、
+\begin{align}
+    \ket{0}\bra{0}\otimes I + \ket{1}\bra{1}\otimes U
+\end{align}
+であることに注意して、この回路を式で書くと、
+測定の直前の状態は
+\begin{align}
+    &(H\otimes I) 
+    (\ket{0}\bra{0}\otimes I + \ket{1}\bra{1}\otimes U)
+    (H\otimes I) 
+    \ket{0}\ket{\psi_\text{in}} \\
+    =
+    &(H\otimes I)
+    (\ket{0}\bra{0}\otimes I + \ket{1}\bra{1}\otimes U)
+    \frac{\ket{0}\ket{\psi_\text{in}} + \ket{1}\ket{\psi_\text{in}}}{\sqrt{2}} \\
+    =
+    &(H\otimes I)
+    \left(
+        \frac{\ket{0}\ket{\psi_\text{in}}}{\sqrt{2}}
+        +
+        \frac{\ket{1}U\ket{\psi_\text{in}}}{\sqrt{2}}
+    \right) \\
+    =
+    &\frac{1}{\sqrt{2}}
+    (H\otimes I)
+    \left(
+        \ket{0}\ket{\psi_\text{in}}
+        +
+        \ket{1}U\ket{\psi_\text{in}}
+    \right) \\
+    =
+    &\frac{1}{\sqrt{2}}
+    \left(
+        \frac{\ket{0} + \ket{1}}{\sqrt{2}}\ket{\psi_\text{in}}
+        +
+        \frac{\ket{0} - \ket{1}}{\sqrt{2}}U\ket{\psi_\text{in}}
+    \right) \\
+    =
+    &
+    \frac{\ket{0} + \ket{1}}{2}\ket{\psi_\text{in}}
+    +
+    \frac{\ket{0} - \ket{1}}{2}U\ket{\psi_\text{in}} \\
+    =
+    &
+    \ket{0}\frac{I + U}{2}\ket{\psi_\text{in}}
+    +
+    \ket{1}\frac{I - U}{2}\ket{\psi_\text{in}}
+\end{align}
+となる。
+第一のqubitが$\ket{0}$である確率は
+\begin{align}
+    p_0
+    &=
+    \left|
+        (\ket{0}\bra{0} \otimes I)
+        \left(
+            \ket{0}\frac{I + U}{2}\ket{\psi_\text{in}}
+            +
+            \ket{1}\frac{I - U}{2}\ket{\psi_\text{in}}
+        \right)
+    \right|^2 \\
+    &=
+    \left|
+        \ket{0}\frac{I + U}{2}\ket{\psi_\text{in}}
+    \right|^2 \\
+    &=
+    \left(
+        \bra{\psi_\text{in}}\frac{I + U^\dagger}{2}\bra{0}
+    \right)
+    \left(
+        \ket{0}\frac{I + U}{2}\ket{\psi_\text{in}}
+    \right) \\
+    &=
+    \bra{\psi_\text{in}}
+    \frac{I + U + U^\dagger + U^\dagger U}{4}
+    \ket{\psi_\text{in}} \\
+    &=
+    \bra{\psi_\text{in}}
+    \frac{2I + U + U^\dagger}{4}
+    \ket{\psi_\text{in}} \\
+    &=
+    \frac{1 + \Re\bra{\psi_\text{in}}U\ket{\psi_\text{in}}}{2}
+\end{align}
+となり、
+第一のqubitが$\ket{1}$である確率は
+\begin{align}
+    p_1
+    &=
+    \left|
+        (\ket{1}\bra{1} \otimes I)
+        \left(
+            \ket{0}\frac{I + U}{2}\ket{\psi_\text{in}}
+            +
+            \ket{1}\frac{I - U}{2}\ket{\psi_\text{in}}
+        \right)
+    \right|^2 \\
+    &=
+    \left|
+        \ket{1}\frac{I - U}{2}\ket{\psi_\text{in}}
+    \right|^2 \\
+    &=
+    \left(
+        \bra{\psi_\text{in}}\frac{I - U^\dagger}{2}\bra{1}
+    \right)
+    \left(
+        \ket{1}\frac{I - U}{2}\ket{\psi_\text{in}}
+    \right) \\
+    &=
+    \bra{\psi_\text{in}}
+    \frac{I - U - U^\dagger + U^\dagger U}{4}
+    \ket{\psi_\text{in}} \\
+    &=
+    \bra{\psi_\text{in}}
+    \frac{2I - U - U^\dagger}{4}
+    \ket{\psi_\text{in}} \\
+    &=
+    \frac{1 - \Re\bra{\psi_\text{in}}U\ket{\psi_\text{in}}}{2}
+\end{align}
+となる。
+従って、この回路では演算子$U$の$\bra{\psi_\text{in}}$における期待値を推定することができる。
+
+測定の結果、第一番目のqubitが$\ket{0}, \ket{1}$だった場合、
+残りの状態はそれぞれ、
+\begin{align}
+    \ket{\psi_\text{out}}
+    =
+    \ket{\psi_0}
+    =
+    \frac{I + U}{2}
+    \ket{\psi_\text{in}}, \quad
+    %
+    \ket{\psi_\text{out}}
+    =
+    \ket{\psi_1}
+    =
+    \frac{I - U}{2}
+    \ket{\psi_\text{in}}
+\end{align}
+となる。
+
+
+
+\subsection{量子フーリエ変換}
+$x_j$を$2^n$成分ベクトルとする。
+これは規格化$\sum_{j=0}^{2^n-1} |x_j|^2 = 1$
+されているとする。
+この離散フーリエ変換
+\begin{align}
+    y_k 
+    = 
+    \frac{1}{\sqrt{2^n}}
+    \sum_{j=0}^{2^n-1} x_j e^{i\frac{2\pi jk}{2^n}}
+\end{align}
+を量子回路を用いて計算する方法について述べる。
+
+整数$j$に対してその2進数表記をラベルに持つような量子状態を考え、
+次のように書く。
+\begin{align}
+    \ket{(j)_2} = \ket{i_1 i_2 \cdots}
+\end{align}
+例えば
+\begin{align}
+    \ket{(6)_2} 
+    = 
+    \ket{110} 
+    = 
+    \ket{1} \otimes \ket{1} \otimes \ket{0} 
+    =
+    \begin{pmatrix}
+        0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 1 \\ 0
+    \end{pmatrix}
+\end{align}
+である。
+この約束のもと、次のような状態を考える
+\begin{align}
+    \ket{x}\rangle 
+    \equiv 
+    \sum_{j=0}^{2^n-1} x_j \ket{(j)_2}, \quad
+    %
+    \ket{y}\rangle 
+    \equiv 
+    \sum_{j=0}^{2^n-1} y_j \ket{(j)_2}
+\end{align}
+$\ket{y}\rangle$を$x_j$で表すと
+\begin{align}
+    \ket{y}\rangle 
+    &=
+    \sum_{k=0}^{2^n-1} y_k \ket{(k)_2} \\
+    &=
+    \frac{1}{\sqrt{2^n}}
+    \sum_{j=0}^{2^n-1}     
+    \sum_{k=0}^{2^n-1}
+    x_j e^{i\frac{2\pi jk}{2^n}}
+    \ket{(k)_2} \\
+    &=
+    \sum_{j=0}^{2^n-1}     
+    x_j
+    \left(
+        \frac{1}{\sqrt{2^n}}
+        \sum_{k=0}^{2^n-1}
+        e^{i\frac{2\pi jk}{2^n}}
+        \ket{(k)_2}    
+    \right)
+\end{align}
+となる。
+もし、あるユニタリー変換で、
+\begin{align}
+    U \ket{(j)_2}
+    =
+    \frac{1}{\sqrt{2^n}}
+    \sum_{k=0}^{2^n-1}
+    e^{i\frac{2\pi jk}{2^n}}
+    \ket{(k)_2}    
+\end{align}
+となるようなものがあったとすると、
+\begin{align}
+    U \ket{x}\rangle 
+    =
+    \ket{y}\rangle
+\end{align}
+となる。
+$\ket{y}\rangle$の係数を読み取ることで、
+フーリエ変換の結果を知ることができる。
+
+以下で、そのような$U$を具体的に構成する。
+ビット数は$n$で固定する。
+\begin{align}
+    \sum_{k=0}^{2^n-1}
+    e^{i\frac{2\pi jk}{2^n}}
+    \ket{(k)_2}    
+    &=
+    \sum_{k_1=0,1}
+    \cdots 
+    \sum_{k_n=0,1}
+    e^{i\frac{2\pi j (k_12^{n-1} + \cdots + k_02^{0})}{2^n}}
+    \ket{k_1 \cdots k_n} \\
+    &=
+    \sum_{k_1=0,1}
+    \cdots 
+    \sum_{k_n=0,1}
+    e^{i 2\pi j (k_12^{-1} + \cdots + k_02^{-n})}
+    \ket{k_1 \cdots k_n} \\  
+    &=
+    \left(
+        \sum_{k_1=0,1}
+        e^{i2\pi j k_1 2^{-1}}
+        \ket{k_1}
+    \right)
+    \otimes 
+    \cdots 
+    \otimes 
+    \left(
+        \sum_{k_n=0,1}
+        e^{i2\pi j k_n 2^{-n}}
+        \ket{k_n}
+    \right) \\
+    &=
+    \left(
+        \ket{0} 
+        + 
+        e^{i2\pi j 2^{-1}} \ket{1}
+    \right)
+    \otimes 
+    \cdots 
+    \otimes 
+    \left(
+        \ket{0} 
+        + 
+        e^{i2\pi j 2^{-n}} \ket{1}
+    \right)
+\end{align}
+ここで、$j2^{-l}$という因子の2進数表記について考える。
+\begin{align}
+    (j)_2 = j_1 j_2 \cdots j_n 
+\end{align}
+とすると、 
+\begin{align}
+    j = j_1 2^{n-1} + j_2 2^{n-2} + \cdots + j_n2^0
+\end{align}
+であるから
+\begin{align}
+    j2^{-l} = j_1 2^{n-l-1} + j_2 2^{n-l-2} + \cdots + j_n2^{-l}
+\end{align}
+である。
+よって、これを2進数表記すると
+\begin{align}
+    (j2^{-1})_2 &= (\text{整数部分}).j_n \\
+    (j2^{-2})_2 &= (\text{整数部分}).j_{n-1}j_n \\
+    \vdots& \\
+    (j2^{-l})_2 &= (\text{整数部分}).j_{n-l+1}\cdots j_{n-1}j_n \\
+    \vdots& \\
+    (j2^{-n})_2 &= (\text{整数部分}).j_{1}\cdots j_{n-1}j_n \\
+\end{align}
+となる。
+また、一般に
+\begin{align}
+    e^{i 2\pi j_1 \cdots j_{l-1}. j_l \cdots j_n}
+    &=
+    e^{
+        i 2\pi 
+        \left(
+            \dots
+            +
+            j_{l-2}2^1
+            +
+            j_{l-1} 
+            +
+            \frac{j_l}{2^1}
+            \cdots
+            +
+            \frac{j_n}{2^{n-l+1}}       
+        \right)
+    } \\
+    &=
+    \cdots
+    e^{i 2\pi j_{l-2}2^1}
+    e^{i 2\pi j_{l-1}}
+    e^{i 2\pi \frac{j_l}{2^1}}
+    \cdots
+    e^{i 2\pi \frac{j_n}{2^{n-l+1}}} \\
+    &=
+    e^{i 2\pi \frac{j_l}{2^1}}
+    \cdots
+    e^{i 2\pi \frac{j_n}{2^{n-l+1}}} \\
+    &=
+    e^{
+        i 2\pi 
+        \left(
+            \frac{j_l}{2^1}
+            \cdots
+            +
+            \frac{j_n}{2^{n-l+1}}       
+        \right)
+    }\\
+    &=
+    e^{i 2\pi 0. j_l \cdots j_n}
+\end{align}
+のように整数部分は効いてこないことに注意すると、
+\begin{align}
+    \sum_{k=0}^{2^n-1}
+    e^{i\frac{2\pi jk}{2^n}}
+    \ket{(k)_2}    
+    &=
+    \left(
+        \ket{0} 
+        + 
+        e^{i2\pi j 2^{-1}} \ket{1}
+    \right)
+    \otimes 
+    \cdots 
+    \otimes 
+    \left(
+        \ket{0} 
+        + 
+        e^{i2\pi j 2^{-n}} \ket{1}
+    \right) \\
+    &=
+    \left(
+        \ket{0} 
+        + 
+        e^{i2\pi 0.j_n} \ket{1}
+    \right)
+    \otimes 
+    \cdots 
+    \otimes 
+    \left(
+        \ket{0} 
+        + 
+        e^{i2\pi 0.j_1 \cdots j_n} \ket{1}
+    \right)
+\end{align}
+を得る。
+よって、求めるべきユニタリー変換$U$とは
+\begin{align}
+    U \ket{(j)_2}
+    =
+    \frac{1}{\sqrt{2^n}}
+    \left(
+        \ket{0} 
+        + 
+        e^{i2\pi 0.j_n} \ket{1}
+    \right)
+    \otimes 
+    \cdots 
+    \otimes 
+    \left(
+        \ket{0} 
+        + 
+        e^{i2\pi 0.j_1 \cdots j_n} \ket{1}
+    \right)
+\end{align}
+となるようなものである。
+
+まず、Hadamardゲートが状態に対して
+\begin{align}
+    H \ket{j} 
+    = \frac{\ket{0} + (-1)^{j}\ket{1}}{\sqrt{2}}
+\end{align}
+と作用することを思い出す。
+ここで、2進小数を導入すると
+\begin{align}
+    e^{i 2\pi 0.0} = 1, \quad 
+    e^{i 2\pi 0.1} = e^{\frac{i 2\pi}{2}} = -1
+\end{align}
+であるから、
+\begin{align}
+    H \ket{j} 
+    = \frac{\ket{0} + e^{i 2\pi 0.j}\ket{1}}{\sqrt{2}}
+\end{align}
+と表すことができる。
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Summary}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\bibliography{sample.bib}
+%\bibliographystyle{h-physrev5}
+
+
+\end{document}
