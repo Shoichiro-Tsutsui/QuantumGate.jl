@@ -1,4 +1,4 @@
-This is LuaTeX, Version beta-0.80.0 (TeX Live 2015/W32TeX) (rev 5238)  (format=lualatex 2016.4.5)  29 OCT 2021 21:02
+This is LuaTeX, Version beta-0.80.0 (TeX Live 2015/W32TeX) (rev 5238)  (format=lualatex 2016.4.5)  7 JAN 2022 13:48
  restricted \write18 enabled.
  file:line:error style messages enabled.
 **c:/Users/shopp_000/Documents/GitHub/QuantumGate.jl/tex/note
@@ -40,7 +40,7 @@ Inserting `luaotfload.aux.patch_cambria_domh' at position 2 in `luaotfload.patch
 Inserting `luaotfload.aux.fixup_fontdata' at position 1 in `luaotfload.patch_font_unsafe'.
 Inserting `luaotfload.aux.set_capheight' at position 3 in `luaotfload.patch_font'.
 Inserting `luaotfload.rewrite_fontname' at position 4 in `luaotfload.patch_font'.
-luaotfload | main : initialization completed in 0.075 seconds) (c:/texlive/2014/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+luaotfload | main : initialization completed in 0.072 seconds) (c:/texlive/2014/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
 Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 ) (c:/texlive/2014/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO)
@@ -614,49 +614,49 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 28
 ) (./note.aux)
 \openout1 = note.aux
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 50.
-LaTeX Font Info:    ... okay on input line 50.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 50.
-LaTeX Font Info:    ... okay on input line 50.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 50.
-LaTeX Font Info:    ... okay on input line 50.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 50.
-LaTeX Font Info:    ... okay on input line 50.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 50.
-LaTeX Font Info:    ... okay on input line 50.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 50.
-LaTeX Font Info:    ... okay on input line 50.
-LaTeX Font Info:    Checking defaults for JY3/mc/m/n on input line 50.
-LaTeX Font Info:    ... okay on input line 50.
-LaTeX Font Info:    Checking defaults for JT3/mc/m/n on input line 50.
-LaTeX Font Info:    ... okay on input line 50.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 50.
-LaTeX Font Info:    ... okay on input line 50.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 50.
-LaTeX Font Info:    ... okay on input line 50.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for JY3/mc/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for JT3/mc/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 52.
+LaTeX Font Info:    ... okay on input line 52.
 \AtBeginShipoutBox=\box49
  ABD: EverySelectfont initializing macros
-LaTeX Info: Redefining \selectfont on input line 50.
+LaTeX Info: Redefining \selectfont on input line 52.
 LaTeX Font Info:    Font shape `JY3/mc/m/n' will be
-(Font)              scaled to size 6.47299pt on input line 50.
+(Font)              scaled to size 6.47299pt on input line 52.
 luaotfload | load : Lookup/name: "IPAExMincho" -> "ipaexm.ttf"
 LaTeX Font Info:    Font shape `JY3/mc/m/n' will be
-(Font)              scaled to size 4.62357pt on input line 50.
+(Font)              scaled to size 4.62357pt on input line 52.
 luaotfload | load : Lookup/name: "IPAExMincho" -> "ipaexm.ttf"
-LaTeX Font Info:    Try loading font information for U+rsfs on input line 50.
+LaTeX Font Info:    Try loading font information for U+rsfs on input line 52.
  (c:/texlive/2014/texmf-dist/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 )
 LaTeX Font Info:    Font shape `JY3/gt/m/n' will be
-(Font)              scaled to size 9.24713pt on input line 50.
+(Font)              scaled to size 9.24713pt on input line 52.
 luaotfload | load : Lookup/name: "IPAExGothic" -> "ipaexg.ttf"(load luc: C:/texlive/2014/texmf-var/luatex-cache/generic/fonts/otf/ipaexg.luc)(load cache: C:/Users/shopp_000/.texlive2015/texmf-var/luatexja/extra_ipaexg.luc)
 LaTeX Font Info:    Font shape `JY3/gt/m/n' will be
-(Font)              scaled to size 6.47299pt on input line 50.
+(Font)              scaled to size 6.47299pt on input line 52.
 luaotfload | load : Lookup/name: "IPAExGothic" -> "ipaexg.ttf"
 LaTeX Font Info:    Font shape `JY3/gt/m/n' will be
-(Font)              scaled to size 4.62357pt on input line 50.
+(Font)              scaled to size 4.62357pt on input line 52.
 luaotfload | load : Lookup/name: "IPAExGothic" -> "ipaexg.ttf"
-Package xypdf Info: Line width: 0.39998pt on input line 50.
+Package xypdf Info: Line width: 0.39998pt on input line 52.
  (c:/texlive/2014/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count134
@@ -681,7 +681,7 @@ Package grfext Info: Graphics extension search list:
  (c:/texlive/2014/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
-Package hyperref Info: Link coloring ON on input line 50.
+Package hyperref Info: Link coloring ON on input line 52.
  (c:/texlive/2014/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
  (c:/texlive/2014/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
@@ -689,91 +689,94 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
 \c@section@level=\count140
 )
-LaTeX Info: Redefining \ref on input line 50.
-LaTeX Info: Redefining \pageref on input line 50.
-LaTeX Info: Redefining \nameref on input line 50.
+LaTeX Info: Redefining \ref on input line 52.
+LaTeX Info: Redefining \pageref on input line 52.
+LaTeX Info: Redefining \nameref on input line 52.
  (./note.out) (./note.out)
 \@outlinefile=\write4
 
 \openout4 = note.out
 LaTeX Font Info:    Font shape `JT3/mc/m/n' will be
-(Font)              scaled to size 15.97903pt on input line 61.
+(Font)              scaled to size 15.97903pt on input line 63.
 luaotfload | load : Lookup/name: "IPAExMincho" -> "ipaexm.ttf"
 LaTeX Font Info:    Font shape `JY3/mc/m/n' will be
-(Font)              scaled to size 15.97903pt on input line 61.
+(Font)              scaled to size 15.97903pt on input line 63.
 luaotfload | load : Lookup/name: "IPAExMincho" -> "ipaexm.ttf"
 LaTeX Font Info:    Font shape `JT3/mc/m/n' will be
-(Font)              scaled to size 11.09656pt on input line 61.
+(Font)              scaled to size 11.09656pt on input line 63.
 luaotfload | load : Lookup/name: "IPAExMincho" -> "ipaexm.ttf"
 LaTeX Font Info:    Font shape `JY3/mc/m/n' will be
-(Font)              scaled to size 11.09656pt on input line 61.
+(Font)              scaled to size 11.09656pt on input line 63.
 luaotfload | load : Lookup/name: "IPAExMincho" -> "ipaexm.ttf"
 LaTeX Font Info:    Font shape `JY3/mc/m/n' will be
-(Font)              scaled to size 5.54828pt on input line 61.
+(Font)              scaled to size 5.54828pt on input line 63.
 luaotfload | load : Lookup/name: "IPAExMincho" -> "ipaexm.ttf"
 LaTeX Font Info:    Font shape `JY3/gt/m/n' will be
-(Font)              scaled to size 11.09656pt on input line 61.
+(Font)              scaled to size 11.09656pt on input line 63.
 luaotfload | load : Lookup/name: "IPAExGothic" -> "ipaexg.ttf"
 LaTeX Font Info:    Font shape `JY3/gt/m/n' will be
-(Font)              scaled to size 7.3977pt on input line 61.
+(Font)              scaled to size 7.3977pt on input line 63.
 luaotfload | load : Lookup/name: "IPAExGothic" -> "ipaexg.ttf"
 LaTeX Font Info:    Font shape `JY3/gt/m/n' will be
-(Font)              scaled to size 5.54828pt on input line 61.
+(Font)              scaled to size 5.54828pt on input line 63.
 luaotfload | load : Lookup/name: "IPAExGothic" -> "ipaexg.ttf"
 LaTeX Font Info:    Font shape `JT3/gt/m/n' will be
-(Font)              scaled to size 9.24713pt on input line 61.
+(Font)              scaled to size 9.24713pt on input line 63.
 luaotfload | load : Lookup/name: "IPAExGothic" -> "ipaexg.ttf"
 LaTeX Font Info:    Font shape `JT3/mc/m/n' will be
-(Font)              scaled to size 13.31586pt on input line 61.
+(Font)              scaled to size 13.31586pt on input line 63.
 luaotfload | load : Lookup/name: "IPAExMincho" -> "ipaexm.ttf"
 LaTeX Font Info:    Font shape `JY3/mc/m/n' will be
-(Font)              scaled to size 13.31586pt on input line 61.
+(Font)              scaled to size 13.31586pt on input line 63.
 luaotfload | load : Lookup/name: "IPAExMincho" -> "ipaexm.ttf"
 LaTeX Font Info:    Font shape `JT3/gt/m/n' will be
-(Font)              scaled to size 13.31586pt on input line 61.
+(Font)              scaled to size 13.31586pt on input line 63.
 luaotfload | load : Lookup/name: "IPAExGothic" -> "ipaexg.ttf"
 LaTeX Font Info:    Font shape `JY3/gt/m/n' will be
-(Font)              scaled to size 13.31586pt on input line 61.
+(Font)              scaled to size 13.31586pt on input line 63.
 luaotfload | load : Lookup/name: "IPAExGothic" -> "ipaexg.ttf" (./note.toc)
 \tf@toc=\write5
 
 \openout5 = note.toc
  [1
 
-{c:/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+{c:/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2]
 LaTeX Font Info:    Font shape `JT3/gt/m/n' will be
-(Font)              scaled to size 11.09656pt on input line 223.
+(Font)              scaled to size 11.09656pt on input line 367.
 luaotfload | load : Lookup/name: "IPAExGothic" -> "ipaexg.ttf" <xymatrix
 LaTeX Font Info:    Font shape `JT3/mc/m/n' will be
-(Font)              scaled to size 6.47299pt on input line 232.
+(Font)              scaled to size 6.47299pt on input line 376.
 luaotfload | load : Lookup/name: "IPAExMincho" -> "ipaexm.ttf"
 LaTeX Font Info:    Font shape `JT3/mc/m/n' will be
-(Font)              scaled to size 4.62357pt on input line 232.
-luaotfload | load : Lookup/name: "IPAExMincho" -> "ipaexm.ttf" 5x2 592> [2] [3] [4] [5] [6] [7]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 923.
- [8]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 923.
+(Font)              scaled to size 4.62357pt on input line 376.
+luaotfload | load : Lookup/name: "IPAExMincho" -> "ipaexm.ttf" 5x2 592> [3] [4] [5] [6] [7] [8] [9] [10]
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 1145.
+ [11] [12] [13]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1473.
+ [14]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1473.
  (./note.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 923.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 923.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1473.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1473.
 Package rerunfilecheck Info: File `note.out' has not changed.
-(rerunfilecheck)             Checksum: D5EBBB0B6BB6D30B57A861E65240B0CE;907.
+(rerunfilecheck)             Checksum: B7FED4649382D24DC082296542FB5070;1566.
 )
 
 Here is how much of LuaTeX's memory you used:
- 14960 strings out of 495003
- 156264,383344 words of node,token memory allocated
- 23119 words of node memory still in use:
-   19 hlist, 2 vlist, 6 rule, 20 glue, 291 kern, 7180 attribute, 1195 glue_spec, 368 attribute_list, 1 write, 2 pdf_literal, 2 pdf_save, 2 pdf_restore, 23 user_defined nodes
-   avail lists: 1:4,2:34487,3:1602,4:2765,5:426,6:2340,7:681,8:45,9:2129,10:12
- 17816 multiletter control sequences out of 65536+600000
- 117 fonts using 39254791 bytes
+ 15026 strings out of 495003
+ 305193,383344 words of node,token memory allocated
+ 28725 words of node memory still in use:
+   19 hlist, 2 vlist, 6 rule, 41 glue, 379 kern, 9360 attribute, 1216 glue_spec, 477 attribute_list, 1 write, 2 pdf_literal, 2 pdf_save, 2 pdf_restore, 23 user_defined nodes
+   avail lists: 1:9,2:76502,3:1926,4:7150,5:444,6:2570,7:811,8:45,9:2169,10:16
+ 17825 multiletter control sequences out of 65536+600000
+ 118 fonts using 39297051 bytes
  49i,19n,43p,1470b,1135s stack positions out of 5000i,500n,10000p,200000b,100000s
 <c:/texlive/2014/texmf-dist/fonts/truetype/public/ipaex/ipaexg.ttf><c:/texlive/2014/texmf-dist/fonts/truetype/public/ipaex/ipaexm.ttf><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex7.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on note.pdf (8 pages, 545850 bytes).
+Output written on note.pdf (14 pages, 612819 bytes).
 
-PDF statistics: 268 PDF objects out of 1000 (max. 8388607)
- 235 compressed objects within 3 object streams
- 129 named destinations out of 1000 (max. 131072)
- 57 words of extra memory for PDF output out of 10000 (max. 10000000)
+PDF statistics: 365 PDF objects out of 1000 (max. 8388607)
+ 325 compressed objects within 4 object streams
+ 184 named destinations out of 1000 (max. 131072)
+ 97 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -3,8 +3,8 @@
 
 
 \usepackage{amsmath, amssymb, latexsym, mathrsfs, bm}
-%\usepackage[braket, qm]{qcircuit}
-\usepackage{braket}
+\usepackage[braket, qm]{qcircuit}
+%\usepackage{braket}
 \usepackage{graphicx}
 \usepackage{grffile}
 \usepackage[svgnames]{xcolor}
@@ -367,14 +367,14 @@ positive operator-valued measure (POVM)
 \subsection{アダマールテスト}
 $U$をユニタリー演算子とする。
 以下のゲート
-%\[ 
-%    \Qcircuit 
-%    @C=1em @R=1em 
-%    {
-%        \lstick{\ket{0}}              & \gate{H} & \ctrl{1} & \gate{H} & \meter \\
-%        \lstick{\ket{\psi_\text{in}}} & \qw      & \gate{U} & \qw      & \rstick{\ket{\psi_\text{out}}}\qw
-%    }
-%\]
+\[ 
+    \Qcircuit 
+    @C=1em @R=1em 
+    {
+        \lstick{\ket{0}}              & \gate{H} & \ctrl{1} & \gate{H} & \meter \\
+        \lstick{\ket{\psi_\text{in}}} & \qw      & \gate{U} & \qw      & \rstick{\ket{\psi_\text{out}}}\qw
+    }
+\]
 を考える。
 control U gateを式で表すと、
 \begin{align}
