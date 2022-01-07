@@ -3,7 +3,8 @@
 
 
 \usepackage{amsmath, amssymb, latexsym, mathrsfs, bm}
-\usepackage[braket, qm]{qcircuit}
+%\usepackage[braket, qm]{qcircuit}
+\usepackage{braket}
 \usepackage{graphicx}
 \usepackage{grffile}
 \usepackage[svgnames]{xcolor}
@@ -40,6 +41,7 @@
 
 
 %% Mathematical symbols
+\DeclareMathOperator{\tr}{tr}
 \DeclareMathOperator{\diag}{diag}
 \DeclareMathOperator{\Tprod}{\mathrm{T}}
 \renewcommand{\Re}{\mathrm{Re}}
@@ -50,7 +52,7 @@
 \begin{document}
 
 
-\title{量子計算}
+\title{量子計算ミニマム}
 
 
 \author{筒井翔一朗}
@@ -87,6 +89,24 @@ Kronecker積
         \vdots & \ddots & \vdots \\
         a_{N1}B & \dots & a_{NN}B
     \end{pmatrix}
+\end{align}
+
+Pauliゲート
+\begin{align}
+    X = 
+    \begin{pmatrix}
+    0 & 1 \\ 1 & 0     
+    \end{pmatrix},\quad 
+    %
+    Y = 
+    \begin{pmatrix}
+    0 & -i \\ i & 0     
+    \end{pmatrix},\quad 
+    %
+    Z = 
+    \begin{pmatrix}
+    1 & 0 \\ 0 & -1     
+    \end{pmatrix} 
 \end{align}
 
 Hadamardゲート
@@ -152,6 +172,42 @@ Hadamardゲート
 
 
 \section{基本的な計算結果}
+Xゲートは
+\begin{align}
+    X\ket{0} 
+    &=
+    \begin{pmatrix}
+        0 & 1 \\ 1 & 0 
+    \end{pmatrix} 
+    \begin{pmatrix}
+        1 \\ 0 
+    \end{pmatrix} 
+    =
+    \begin{pmatrix}
+        0 \\ 1 
+    \end{pmatrix}
+    =
+    \ket{1}  \\
+    %
+    X\ket{1} 
+    &=
+    \begin{pmatrix}
+        0 & 1 \\ 1 & 0 
+    \end{pmatrix} 
+    \begin{pmatrix}
+        0 \\ 1 
+    \end{pmatrix} 
+    =
+    \begin{pmatrix}
+        1 \\ 0 
+    \end{pmatrix}
+    =
+    \ket{0}
+\end{align}
+のように0,1を反転させるので、NOTの役割をする。
+
+
+アダマールゲートによる演算。
 \begin{align}
     H \ket{0}
     &=
@@ -190,6 +246,31 @@ Hadamardゲート
     \frac{\ket{0} - \ket{1}}{\sqrt{2}}
 \end{align}
 
+量子状態と測定確率。
+規格化された状態
+\begin{align}
+    \ket{\psi} 
+    =
+    \frac{\alpha}{\sqrt{|\alpha|^2+|\alpha|^2}} 
+    \ket{0}   
+    +
+    \frac{\beta}{\sqrt{|\alpha|^2+|\alpha|^2}} 
+    \ket{1}   
+\end{align}
+があったとする。
+この状態を測定して$\ket{0}$が観測される確率は
+\begin{align}
+    P_0
+    =
+    |\ket{0}\bra{0}\ket{\psi}|^2
+    =
+    |\bra{0}\ket{\psi}|^2
+    =
+    \frac{|\alpha|^2}{|\alpha|^2 + |\beta|^2}
+\end{align}
+である。
+
+
 10進数と2進数の関係。
 $(k)_2 = k_1 k_2 \cdots k_n$のとき
 \begin{align}
@@ -218,19 +299,82 @@ $(k)_2 = k_1 k_2 \cdots k_n$のとき
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{測定について}
+ここでは有限次元のHilbert空間のみ考える。
+半正定値行列のセット$\{F_i\}$で
+\begin{align}
+    \sum_i F_i = I
+\end{align}
+を満たすようなものを
+positive operator-valued measure (POVM)
+と呼ぶ。
+量子状態$\rho$を測定して、出力$i$が得られる確率は
+\begin{align}
+    \tr(\rho F_i)    
+\end{align}
+で与えられる。
+
+例として、純粋状態
+\begin{align}
+    \rho = \ket{\psi}\bra{\psi}, \quad 
+    \ket{\psi} 
+    =
+    \frac{\alpha}{|\alpha|^2+|\alpha|^2} 
+    \ket{0}   
+    +
+    \frac{\beta}{|\alpha|^2+|\alpha|^2}
+    \ket{1}   
+\end{align}
+と、POVM
+\begin{align}
+    F_0 = \frac{1 + Z}{2}
+    = \begin{pmatrix}
+        1 & 0 \\ 0 & 0
+    \end{pmatrix}, \quad 
+    F_1 = \frac{1 - Z}{2} 
+    = \begin{pmatrix}
+        0 & 0 \\ 0 & 1
+    \end{pmatrix}, \quad 
+\end{align}
+を考える。
+測定によって出力0が得られる確率は
+\begin{align}
+    \tr(\rho F_0)
+    =
+    \tr(\ket{\psi}\bra{\psi} F_0)
+    =
+    \bra{\psi}F_0\ket{\psi}
+    =
+    \frac{\alpha^2}{|\alpha|^2+|\alpha|^2}
+\end{align}
+出力1が得られる確率は
+\begin{align}
+    \tr(\rho F_1)
+    =
+    \tr(\ket{\psi}\bra{\psi} F_1)
+    =
+    \bra{\psi}F_1\ket{\psi}
+    =
+    \frac{\beta^2}{|\alpha|^2+|\alpha|^2}
+\end{align}
+である。
+これはいわゆるBornの規則である。
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{基本的な量子アルゴリズム}
 
 \subsection{アダマールテスト}
 $U$をユニタリー演算子とする。
 以下のゲート
-\[ 
-    \Qcircuit 
-    @C=1em @R=1em 
-    {
-        \lstick{\ket{0}}              & \gate{H} & \ctrl{1} & \gate{H} & \meter \\
-        \lstick{\ket{\psi_\text{in}}} & \qw      & \gate{U} & \qw      & \rstick{\ket{\psi_\text{out}}}\qw
-    }
-\]
+%\[ 
+%    \Qcircuit 
+%    @C=1em @R=1em 
+%    {
+%        \lstick{\ket{0}}              & \gate{H} & \ctrl{1} & \gate{H} & \meter \\
+%        \lstick{\ket{\psi_\text{in}}} & \qw      & \gate{U} & \qw      & \rstick{\ket{\psi_\text{out}}}\qw
+%    }
+%\]
 を考える。
 control U gateを式で表すと、
 \begin{align}
@@ -908,6 +1052,412 @@ $\lambda_l/2\pi$は次のように2進展開できる:
 である。
 よって、$V = \mathrm{QFT}^{\dagger }\prod_{k=1}^n C_k(U^{2^{k-1}}_{2}) H_k$
 とすれば良いことが分かった。
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{誤り訂正}
+\subsection{線形符号による古典誤り訂正}
+最も素朴な誤り訂正の方法は多数決である。
+例えば、$0$というデータがあったとき、
+これを$000$という風に冗長化したデータを作っておけば、
+何らかの要因によってビットが部分的に反転してしまい
+$010$になったとしても、
+反転前のデータは$000$であろうと推定できる。
+
+$k$ビットの情報$v$（成分が$0$ or $1$の$k$成分ベクトル）
+があったとし、
+これを$n = dk$ビットのベクトルに冗長化することを考える。
+冗長化後のベクトルを$v'$, $v$から$v'$への変換を$G$とする。 
+\begin{align}
+    v' = Gv
+\end{align}
+$G$は$n \times k$行列である。
+この操作を符号化、
+$G$を生成行列と呼ぶ。
+$G$として冒頭の多数決方式を採用したものを
+線形符号と呼ぶ。
+例えば、
+\begin{align}
+    v 
+    =
+    \begin{pmatrix}
+        0 \\ 1 \\ 0
+    \end{pmatrix},
+    \quad 
+    G
+    =
+    \begin{pmatrix}
+        1 & 0 & 0 \\
+        1 & 0 & 0 \\
+        1 & 0 & 0 \\
+        0 & 1 & 0 \\
+        0 & 1 & 0 \\
+        0 & 1 & 0 \\
+        0 & 0 & 1 \\
+        0 & 0 & 1 \\
+        0 & 0 & 1
+    \end{pmatrix},
+\end{align}
+と取れば、
+\begin{align}
+    v' = 
+    \begin{pmatrix}
+        0 \\ 0 \\ 0 \\ 
+        1 \\ 1 \\ 1 \\ 
+        0 \\ 0 \\ 0
+    \end{pmatrix}
+\end{align}
+となる。
+
+次に、エラーが起きたかどうかを判定する方法を考える。
+$n$ビットのベクトルのうち、
+$Gv$の形に表されるもの全体の集合を$W$とする。
+$W$の元を符号語と呼ぶ。
+例えば($k=2$, $d=3$)
+\begin{align}
+    v = 
+    \begin{pmatrix}
+    1 \\ 1 \\ 1 \\ 0 \\ 0 \\ 0    
+    \end{pmatrix}
+\end{align}
+は符号語だが、
+\begin{align}
+    v = 
+    \begin{pmatrix}
+    1 \\ 0 \\ 1 \\ 0 \\ 0 \\ 0
+    \end{pmatrix}
+\end{align}
+ではない。
+
+各列ベクトルが独立で、$H_cG\equiv 0$ (mod 2)を満たすような
+$(n-k) \times n$行列$H_c$があったとする。
+これを検査行列と呼ぶ。
+任意の符号語$w$について
+\begin{align}
+    H_c w = H_c Gv = 0
+\end{align}
+が成り立つ。
+また逆に、$H_c w = 0$ならば、
+$w$は符号語であることも示せるらしい。
+このようにして、符号語の2通りの特徴付けを得た。
+\begin{itemize}
+    \item $G$を用いた見方: ベクトルが適切に水増しされている。
+    \item $H_c$を用いた見方: ブロック内の隣接するビットが等しい。
+\end{itemize}
+
+$w \in W$のときに限りゼロになるような
+ベクトル$s = H_c w$を$w$のシンドローム、
+その成分をシンドローム値と呼ぶ。
+ひとつでも0でないシンドローム値があれば、
+$w$にはエラーが起きていることになる。
+シンドローム値がすべて0のときは、
+$w$にはエラーがないか、
+エラー自身が$H_c e = 0$を満たしているかのどちらかである。
+
+
+
+（例 $k=3, n=9$）
+線形符号$G$に対する検査行列は以下を取ればよい。
+\begin{align}
+    H_c
+    =
+    \begin{pmatrix}
+        1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 1
+    \end{pmatrix}
+\end{align}
+実際
+\begin{align}
+    \begin{pmatrix}
+        1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 1
+    \end{pmatrix}    
+    \begin{pmatrix}
+        1 & 0 & 0 \\
+        1 & 0 & 0 \\
+        1 & 0 & 0 \\
+        0 & 1 & 0 \\
+        0 & 1 & 0 \\
+        0 & 1 & 0 \\
+        0 & 0 & 1 \\
+        0 & 0 & 1 \\
+        0 & 0 & 1
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        2 & 0 & 0 \\
+        2 & 0 & 0 \\
+        0 & 2 & 0 \\
+        0 & 2 & 0 \\
+        0 & 0 & 2 \\
+        0 & 0 & 2
+    \end{pmatrix}
+    \equiv 
+    \begin{pmatrix}
+        0 & 0 & 0 \\
+        0 & 0 & 0 \\
+        0 & 0 & 0 \\
+        0 & 0 & 0 \\
+        0 & 0 & 0 \\
+        0 & 0 & 0
+    \end{pmatrix}
+\end{align}
+となりOKである。
+符号語$w$に対して$H_c w$を計算すると、
+\begin{align}
+    H_c w 
+    =    
+    \begin{pmatrix}
+        1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 1
+    \end{pmatrix}    
+    \begin{pmatrix}
+        0 \\ 0 \\ 0 \\ 
+        1 \\ 1 \\ 1 \\ 
+        0 \\ 0 \\ 0
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        0 \\ 0 \\
+        2 \\ 2 \\
+        0 \\ 0 \\
+    \end{pmatrix}
+    \equiv
+    \begin{pmatrix}
+        0 \\ 0 \\
+        0 \\ 0 \\
+        0 \\ 0 \\
+    \end{pmatrix}
+\end{align}
+となる。
+もしエラーが混入していると、
+\begin{align}
+    H_c w 
+    =    
+    \begin{pmatrix}
+        1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 & 1 & 1 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 1
+    \end{pmatrix}    
+    \left(
+        \begin{pmatrix}
+            0 \\ 0 \\ 0 \\ 
+            1 \\ 1 \\ 1 \\ 
+            0 \\ 0 \\ 0
+        \end{pmatrix}
+        +
+        \begin{pmatrix}
+            0 \\ 0 \\ 0 \\ 
+            1 \\ 0 \\ 0 \\ 
+            0 \\ 0 \\ 0
+        \end{pmatrix}
+    \right)
+    =
+    \left(
+        \begin{pmatrix}
+            0 \\ 0 \\
+            2 \\ 2 \\
+            0 \\ 0 \\
+        \end{pmatrix}
+        +
+        \begin{pmatrix}
+            0 \\ 0 \\
+            1 \\ 0 \\
+            0 \\ 0 \\
+        \end{pmatrix}
+    \right)
+    \equiv
+    \begin{pmatrix}
+        0 \\ 0 \\
+        1 \\ 0 \\
+        0 \\ 0 \\
+    \end{pmatrix}
+\end{align}
+となる。
+
+
+
+\subsection{量子誤り訂正}
+現在知られている量子誤り訂正は、
+線形符号を量子計算版とでもいうべきものである。
+具体例から考える。
+1ビットの情報を3ビットに冗長化することを考える。
+ここでは、符号化前の量子状態もあらかじめ3bitで用意しておき、
+情報は1bit目に格納しておくことにする。
+よって符号化$G$として
+\begin{align}
+    \ket{000} &\to \ket{000} \\
+    \ket{100} &\to \ket{111}
+\end{align}
+となるようなものを用意できれば良い。
+これはCNOTゲート
+\begin{align}
+    \Lambda_{1,2}(X) 
+    &=
+    P_0 \otimes I \otimes I
+    +
+    P_1 \otimes X \otimes I \\
+    %
+    \Lambda_{1,3}(X) 
+    &=
+    P_0 \otimes I \otimes I
+    +
+    P_1 \otimes I \otimes X
+\end{align}
+で実現できる。
+実際、
+\begin{align}
+    \Lambda_{1,2}(X)\Lambda_{1,3}(X)\ket{000}
+    &=
+    \ket{000} \\
+    %
+    \Lambda_{1,2}(X)\Lambda_{1,3}(X)\ket{100}
+    &=
+    \ket{111}
+\end{align}
+となる。
+
+次にシンドロームを調べる方法を考える。
+\begin{align}
+    M_0^{(1)} = \frac{I + Z_1Z_2}{2}, \quad
+    M_1^{(1)} = \frac{I - Z_1Z_2}{2}
+\end{align}
+という2つの演算子を考えると、これらはPOVMをなし、
+\begin{align}
+    M_0^{(1)} \ket{000} 
+    &=
+    \frac{1 + 1}{2} \ket{000}
+    =
+    \ket{000} \\
+    %
+    M_0^{(1)} \ket{100} 
+    &=
+    \frac{1 - 1}{2} \ket{100}
+    =
+    0 \\
+    %
+    M_0^{(1)} \ket{010} 
+    &=
+    \frac{1 - 1}{2} \ket{010}
+    =
+    0 \\
+    %
+    M_0^{(1)} \ket{110} 
+    &=
+    \frac{1 + 1}{2} \ket{110}
+    =
+    \ket{110}
+\end{align}
+\begin{align}
+    M_1^{(1)} \ket{000} 
+    &=
+    \frac{1 - 1}{2} \ket{000}
+    =
+    0 \\
+    %
+    M_1^{(1)} \ket{100} 
+    &=
+    \frac{1 + 1}{2} \ket{100}
+    =
+    \ket{100} \\
+    %
+    M_1^{(1)} \ket{010} 
+    &=
+    \frac{1 + 1}{2} \ket{010}
+    =
+    \ket{010} \\
+    %
+    M_1^{(1)} \ket{110} 
+    &=
+    \frac{1 - 1}{2} \ket{110}
+    =
+    0
+\end{align}
+より、
+\begin{align}
+    \tr(\ket{ij0}\bra{ij0} M_0^{1})
+    =
+    \delta_{ij}, \\
+    %
+    \tr(\ket{ij0}\bra{ij0} M_1^{1})
+    =
+    1 - \delta_{ij}
+\end{align}
+となるから、
+$M_1^{1}$の期待値が、1,2番のビットに関する
+シンドローム値を与えることが分かる。
+全く同様にして、
+\begin{align}
+    M_0^{(2)} = \frac{I + Z_2Z_3}{2}, \quad
+    M_1^{(2)} = \frac{I - Z_2Z_3}{2}
+\end{align}
+も測定すれば、すべてのシンドローム値が得られる。
+古典的な誤り訂正の場合、シンドローム値は0か1
+であったが、
+量子計算の場合はそれ以外の中途半端な値を取りうる。
+例えば、$\ket{\psi} = (\ket{000} + \ket{010})/\sqrt{2}$
+のとき、
+\begin{align}
+    M_0^{(1)}\ket{\psi}
+    \frac{1}{\sqrt{2}}(\ket{000} + \ket{010})
+    =
+    \frac{\ket{000}}{\sqrt{2}}
+\end{align}
+より、
+\begin{align}
+    \tr(\ket{\psi}\bra{\psi}M_0^{(1)})
+    =
+    \frac{1}{2}
+\end{align}
+となる。
+
+以下では簡単のため、
+このような位相を変化させるエラーはなく、
+ビット反転を引き起こすエラーのみを考える。
+そのようなエラーを引き起こす操作は
+\begin{align}
+    E = X_1^{e_1} X_2^{e_1} X_3^{e_1}
+\end{align}
+と書ける。ただし、$e_1,e_2,e_3 = 0,1$である。
+仮に、$\ket{000}$がオリジナルのデータで、
+これに、$e_1 = 1, e_2 = e_3 = 0$のエラーが乗ったとすると、
+\begin{align}
+    E\ket{000}
+    =
+    X_1\ket{000}
+    =
+    \ket{100}
+\end{align}
+となる。
+この状態のシンドローム値を完全に調べると、
+1番目のビットに反転があることが分かるから、
+状態に再度$X_1$を作用させれば
+もとの状態を復元することができる。
+\begin{align}
+    R\ket{100} = X_1\ket{100} = \ket{000}
+\end{align}
+これでエラー訂正が完了した。
+
+
+
+\subsection{スタビライザー符号}
+
 
 
 
