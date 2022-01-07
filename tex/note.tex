@@ -100,6 +100,16 @@ Hadamardゲート
     \end{pmatrix}
 \end{align}
 
+一般位相ゲート
+\begin{align}
+    R_l
+    =
+    \begin{pmatrix}
+        1 & 0 \\
+        0 & e^{i\frac{2\pi}{2^l}}
+    \end{pmatrix}
+\end{align}
+
 整数$k$の2進数表記
 \begin{align}
     (k)_2 = i_1 i_2 \cdots, \quad i_n = 0, 1
@@ -632,7 +642,272 @@ $\ket{y}\rangle$の係数を読み取ることで、
     = \frac{\ket{0} + e^{i 2\pi 0.j}\ket{1}}{\sqrt{2}}
 \end{align}
 と表すことができる。
+このことを用い、まず第一番目のbitにHadamardゲートを作用させると
+\begin{align}
+    (H \otimes I \otimes \cdots)\ket{j_1j_2\cdots j_n}
+    =
+    \left(
+        \frac{\ket{0} + e^{i 2\pi 0.j_1}\ket{1}}{\sqrt{2}}
+    \right)
+    \ket{j_2\cdots j_n}
+\end{align}
+となる。
+次に、2番目のbitを制御ゲートとする位相ゲート$R_2$を一番目のゲートに作用させる。
+3番目以降のbitは関与しないから、1,2番目のbitだけに注目して計算してみる。
+\begin{align}
+    \left(
+        I \otimes \ket{0}\bra{0}
+        + 
+        R_2 \otimes \ket{1}\bra{1}
+    \right)
+    \left(
+        \frac{\ket{0} + e^{i 2\pi 0.j_1}\ket{1}}{\sqrt{2}}
+    \right)
+    \ket{0}
+    &=
+    \frac{\ket{00} + e^{i 2\pi 0.j_1}\ket{10}}{\sqrt{2}}
+    =
+    \frac{\ket{00} + e^{i 2\pi 0.j_10}\ket{10}}{\sqrt{2}} \\
+    %
+    \left(
+        I \otimes \ket{0}\bra{0}
+        + 
+        R_2 \otimes \ket{1}\bra{1}
+    \right)
+    \left(
+        \frac{\ket{0} + e^{i 2\pi 0.j_1}\ket{1}}{\sqrt{2}}
+    \right)
+    \ket{1}
+    &=
+    \left(
+        \frac{\ket{0} + e^{i\frac{2\pi}{2^2}}e^{i 2\pi 0.j_1}\ket{1}}{\sqrt{2}}
+    \right)
+    \ket{1}
+    =
+    \frac{\ket{01} + e^{i 2\pi 0.j_11}\ket{11}}{\sqrt{2}}
+\end{align}
+この結果をまとめると、
+\begin{align}
+    \left(
+        I \otimes \ket{0}\bra{0}
+        + 
+        R_2 \otimes \ket{1}\bra{1}
+    \right)
+    \left(
+        \frac{\ket{0} + e^{i 2\pi 0.j_1}\ket{1}}{\sqrt{2}}
+    \right)
+    \ket{j_2}
+    =
+    \frac{\ket{0} + e^{i 2\pi 0.j_1j_2}\ket{1}}{\sqrt{2}}
+    \ket{j_2}
+\end{align}
+となる。
+まったく同様の計算により、
+\begin{align}
+    C_{n,1}(R_n)
+    \cdots
+    C_{3,1}(R_3)
+    C_{2,1}(R_2)
+    H_1
+    \ket{j_1j_2j_3\cdots j_n}
+    =
+    \frac{\ket{0} + e^{i 2\pi 0.j_1j_2j_3\cdots j_n}\ket{1}}{\sqrt{2}}
+    \ket{j_2j_3\cdots j_n}
+\end{align}
+となる。
+以下、残った$\ket{j_2j_3\cdots j_n}$の部分に同様な操作を施す。
+\begin{align}
+    C_{n-1,2}(R_n)
+    \cdots
+    C_{3,2}(R_4)
+    C_{2,2}(R_3)
+    H_2
+    \ket{\bullet j_2j_3\cdots j_n}
+    &=
+    \frac{\ket{0} + e^{i 2\pi 0.j_2j_3\cdots j_n}\ket{1}}{\sqrt{2}}
+    \ket{j_3\cdots j_n} \\
+    %
+    C_{n-1,3}(R_n)
+    \cdots
+    C_{3,3}(R_5)
+    C_{2,3}(R_4)
+    H_3
+    \ket{\bullet\bullet j_3\cdots j_n}
+    &=
+    \frac{\ket{0} + e^{i 2\pi 0.j_3\cdots j_n}\ket{1}}{\sqrt{2}}
+    \ket{j_4\cdots j_n} \\
+    %
+    & \vdots
+\end{align}
+これらをすべて合わせると、
+\begin{align}
+    \ket{j_1j_2 \cdots j_n}
+    \to
+    \frac{1}{\sqrt{2^n}}
+    \left(
+        \ket{0} 
+        + 
+        e^{i2\pi 0.j_1 \cdots j_n} \ket{1}
+    \right)
+    \otimes 
+    \cdots 
+    \otimes 
+    \left(
+        \ket{0} 
+        + 
+        e^{i2\pi 0.j_n} \ket{1}
+    \right)
+\end{align}
+を得る。最後にSWAPゲートで状態の入れ替えを行えば完了である。
 
+
+\subsection{位相推定アルゴリズム}
+ユニタリー演算子$U$が固有値$e^{i\lambda_l}$をもち、
+対応する固有状態が$\ket{\psi_l}$であるとする。
+固有値の位相は$0 \leq \lambda_l \leq 2\pi$として一般性を失わないから、
+$\lambda_l/2\pi$は次のように2進展開できる:
+\begin{align}
+    \frac{\lambda_l}{2\pi}
+    =
+    \frac{j_1^{(l)}}{2^1} + \cdots + \frac{j_n^{(l)}}{2^n}
+\end{align}
+ただし、展開が無限次になる場合は、$n$桁で打ち切って近似しているものと考える。
+これを次のように表す。
+\begin{align}
+    \lambda_l = (2\pi) 0.j_1^{(l)}\cdots j_n^{(l)}
+\end{align}
+一般の量子状態$\ket{\psi}$を$U$の固有状態で展開したときの係数を$c_l$と表すことができる。
+\begin{align}
+    \ket{\psi} = \sum_l c_l \ket{\psi_l}
+\end{align}
+このとき、$\ket{\psi}$と$n$桁の補助量子ビット$\ket{00\dots 0}$を
+\begin{align}
+    V\ket{00\dots 0}\ket{\psi}
+    =
+    \sum_l c_l \ket{j_1^{(l)}\cdots j_n^{(l)}} \ket{\psi_l}
+\end{align}
+のように変換するアルゴリズムを量子位相推定と呼ぶ。
+例えば、補助ビットが$\ket{0\cdots 0}$となる確率は
+\begin{align}
+    &\left|
+        \ket{0\cdots 0}\bra{0\cdots 0} \otimes I 
+        \sum_l c_l \ket{j_1^{(l)}\cdots j_n^{(l)}} \ket{\psi_l}
+    \right|^2 \\
+    =
+    &\left|
+        \sum_l c_l 
+        \ket{0\cdots 0}\bra{0\cdots 0}\ket{j_1^{(l)}\cdots j_n^{(l)}} 
+        \ket{\psi_l}
+    \right|^2 \\
+    =
+    &\sum_{ll'} c_l c_{l'}^* 
+    \bra{\psi_{l'}}
+    \bra{j_1^{(l')}\cdots j_n^{(l')}}\ket{0\cdots 0}
+    \bra{0\cdots 0}
+    \ket{0\cdots 0}
+    \bra{0\cdots 0} \ket{j_1^{(l)}\cdots j_n^{(l)}} 
+    \ket{\psi_l} \\
+    =
+    &\sum_{ll'} c_l c_{l'}^* \delta_{ll'}
+    \bra{j_1^{(l')}\cdots j_n^{(l')}}\ket{0\cdots 0}
+    \bra{0\cdots 0} \ket{j_1^{(l)}\cdots j_n^{(l)}} \\ 
+    =
+    &\sum_{l} |c_l|^2 
+    \bra{j_1^{(l)}\cdots j_n^{(l)}}\ket{0\cdots 0}
+    \bra{0\cdots 0} \ket{j_1^{(l)}\cdots j_n^{(l)}} \\
+    =
+    &\sum_{l} |c_l|^2 
+    \left| \bra{0\cdots 0} \ket{j_1^{(l)}\cdots j_n^{(l)}} \right|^2
+\end{align}
+
+
+まず準備として、ひとつの補助ビットと$U$の固有状態のテンソル積状態を考え、
+それにHadamardゲートと制御$U^{2^k}$ゲートを作用させる。
+\begin{align}
+    C_1(U^{2^{k}}_{2}) H_1 \ket{0}\ket{\psi_l}
+    &=
+    C_1(U^{2^{k}}_{2}) 
+    \frac{\ket{0} + \ket{1}}{\sqrt{2}}
+    \ket{\psi_l} \\
+    &=
+    \frac{\ket{0}}{\sqrt{2}}
+    \ket{\psi_l}
+    +
+    \frac{\ket{1}}{\sqrt{2}} 
+    U^{2^{k}}\ket{\psi_l} \\
+    &=
+    \frac{\ket{0} + e^{2^ki\lambda_l} \ket{1}}{\sqrt{2}}
+    \ket{\psi_l}
+\end{align}
+ここで、
+\begin{align}
+    2^0 \lambda_l 
+    &=
+    (2\pi) 2^0 0.j_1^{(l)} \cdots j_n^{(l)}
+    =
+    (2\pi) 0.j_2^{(l)} \cdots j_n^{(l)} \\
+    %
+    2^1 \lambda_l 
+    &=
+    (2\pi) 2^1 0.j_1^{(l)} \cdots j_n^{(l)}
+    =
+    (2\pi) j_1^{(l)}.j_2^{(l)} \cdots j_n^{(l)} \\
+    %
+    2^2 \lambda_l 
+    &=
+    (2\pi) 2^2 0.j_1^{(l)} \cdots j_n^{(l)}
+    =
+    (2\pi) j_1^{(l)}j_2^{(l)}.j_3^{(l)} \cdots j_n^{(l)} \\
+    %
+    &\vdots \\
+    %
+    2^k \lambda_l 
+    &=
+    (2\pi) 2^k 0.j_1^{(l)} \cdots j_n^{(l)}
+    =
+    (2\pi) j_1^{(l)} \cdots j_k^{(l)}.j_{k+1}^{(l)} \cdots j_n^{(l)}
+\end{align}
+であるから、
+\begin{align}
+    C_1(U^{2^{k}}_{2}) H_1 \ket{0}\ket{\psi_l}
+    &=
+    \frac{\ket{0} + e^{2^ki\lambda_l} \ket{1}}{\sqrt{2}}
+    \ket{\psi_l} \\
+    &=
+    \frac{\ket{0} + e^{(2\pi i) j_1^{(l)} \cdots j_k^{(l)}.j_{k+1}^{(l)} \cdots j_n^{(l)}} \ket{1}}{\sqrt{2}}
+    \ket{\psi_l} \\
+    &=
+    \frac{\ket{0} + e^{(2\pi i) 0.j_{k+1}^{(l)} \cdots j_n^{(l)}} \ket{1}}{\sqrt{2}}
+    \ket{\psi_l}
+\end{align}
+を得る。
+この結果を用いると、
+\begin{align}
+    &\prod_{k=1}^n C_k(U^{2^{k-1}}_{2}) H_k \ket{00\cdots 0}\ket{\psi_l} \\
+    =
+    &\frac{1}{\sqrt{2^n}}
+    \left(
+        \ket{0} + e^{(2\pi i) 0.j_{1}^{(l)} \cdots j_n^{(l)}} \ket{1}
+    \right)
+    \left(
+        \ket{0} + e^{(2\pi i) 0.j_{2}^{(l)} \cdots j_n^{(l)}} \ket{1}
+    \right)
+    \cdots 
+    \left(
+        \ket{0} + e^{(2\pi i) 0.j_n^{(l)}} \ket{1}
+    \right)
+    \ket{\psi_l}
+\end{align}
+となるが、これは$\ket{j_1j_2 \cdots j_n}$に量子フーリエ変換を施してできる状態に他ならない。
+従って、
+\begin{align}
+    \mathrm{QFT}^{\dagger }\prod_{k=1}^n C_k(U^{2^{k-1}}_{2}) H_k \ket{00\cdots 0}\ket{\psi_l} 
+    =
+    \ket{j_1^{(l)}j_2^{(l)} \cdots j_n^{(l)}}\ket{\psi_l}
+\end{align}
+である。
+よって、$V = \mathrm{QFT}^{\dagger }\prod_{k=1}^n C_k(U^{2^{k-1}}_{2}) H_k$
+とすれば良いことが分かった。
 
 
 

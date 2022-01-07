@@ -1,4 +1,4 @@
-This is LuaTeX, Version beta-0.80.0 (TeX Live 2015/W32TeX) (rev 5238)  (format=lualatex 2016.4.5)  26 OCT 2021 22:08
+This is LuaTeX, Version beta-0.80.0 (TeX Live 2015/W32TeX) (rev 5238)  (format=lualatex 2016.4.5)  29 OCT 2021 21:02
  restricted \write18 enabled.
  file:line:error style messages enabled.
 **c:/Users/shopp_000/Documents/GitHub/QuantumGate.jl/tex/note
@@ -40,7 +40,7 @@ Inserting `luaotfload.aux.patch_cambria_domh' at position 2 in `luaotfload.patch
 Inserting `luaotfload.aux.fixup_fontdata' at position 1 in `luaotfload.patch_font_unsafe'.
 Inserting `luaotfload.aux.set_capheight' at position 3 in `luaotfload.patch_font'.
 Inserting `luaotfload.rewrite_fontname' at position 4 in `luaotfload.patch_font'.
-luaotfload | main : initialization completed in 0.078 seconds) (c:/texlive/2014/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+luaotfload | main : initialization completed in 0.075 seconds) (c:/texlive/2014/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
 Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 ) (c:/texlive/2014/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO)
@@ -742,38 +742,38 @@ luaotfload | load : Lookup/name: "IPAExGothic" -> "ipaexg.ttf" (./note.toc)
 
 {c:/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 LaTeX Font Info:    Font shape `JT3/gt/m/n' will be
-(Font)              scaled to size 11.09656pt on input line 213.
+(Font)              scaled to size 11.09656pt on input line 223.
 luaotfload | load : Lookup/name: "IPAExGothic" -> "ipaexg.ttf" <xymatrix
 LaTeX Font Info:    Font shape `JT3/mc/m/n' will be
-(Font)              scaled to size 6.47299pt on input line 222.
+(Font)              scaled to size 6.47299pt on input line 232.
 luaotfload | load : Lookup/name: "IPAExMincho" -> "ipaexm.ttf"
 LaTeX Font Info:    Font shape `JT3/mc/m/n' will be
-(Font)              scaled to size 4.62357pt on input line 222.
-luaotfload | load : Lookup/name: "IPAExMincho" -> "ipaexm.ttf" 5x2 592> [2] [3] [4] [5]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 648.
- [6]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 648.
+(Font)              scaled to size 4.62357pt on input line 232.
+luaotfload | load : Lookup/name: "IPAExMincho" -> "ipaexm.ttf" 5x2 592> [2] [3] [4] [5] [6] [7]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 923.
+ [8]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 923.
  (./note.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 648.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 648.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 923.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 923.
 Package rerunfilecheck Info: File `note.out' has not changed.
-(rerunfilecheck)             Checksum: 9CF549773E278251375ACC57B8D56704;747.
+(rerunfilecheck)             Checksum: D5EBBB0B6BB6D30B57A861E65240B0CE;907.
 )
 
 Here is how much of LuaTeX's memory you used:
- 14922 strings out of 495003
- 156261,383344 words of node,token memory allocated
- 19002 words of node memory still in use:
-   19 hlist, 2 vlist, 6 rule, 13 glue, 223 kern, 5680 attribute, 1188 glue_spec, 293 attribute_list, 1 write, 2 pdf_literal, 2 pdf_save, 2 pdf_restore, 23 user_defined nodes
-   avail lists: 1:5,2:33647,3:1035,4:2383,5:371,6:1756,7:546,8:45,9:2129,10:12
- 17815 multiletter control sequences out of 65536+600000
+ 14960 strings out of 495003
+ 156264,383344 words of node,token memory allocated
+ 23119 words of node memory still in use:
+   19 hlist, 2 vlist, 6 rule, 20 glue, 291 kern, 7180 attribute, 1195 glue_spec, 368 attribute_list, 1 write, 2 pdf_literal, 2 pdf_save, 2 pdf_restore, 23 user_defined nodes
+   avail lists: 1:4,2:34487,3:1602,4:2765,5:426,6:2340,7:681,8:45,9:2129,10:12
+ 17816 multiletter control sequences out of 65536+600000
  117 fonts using 39254791 bytes
  49i,19n,43p,1470b,1135s stack positions out of 5000i,500n,10000p,200000b,100000s
 <c:/texlive/2014/texmf-dist/fonts/truetype/public/ipaex/ipaexg.ttf><c:/texlive/2014/texmf-dist/fonts/truetype/public/ipaex/ipaexm.ttf><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex7.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb><<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
-Output written on note.pdf (6 pages, 507946 bytes).
+Output written on note.pdf (8 pages, 545850 bytes).
 
-PDF statistics: 218 PDF objects out of 1000 (max. 8388607)
- 188 compressed objects within 2 object streams
- 92 named destinations out of 1000 (max. 131072)
- 49 words of extra memory for PDF output out of 10000 (max. 10000000)
+PDF statistics: 268 PDF objects out of 1000 (max. 8388607)
+ 235 compressed objects within 3 object streams
+ 129 named destinations out of 1000 (max. 131072)
+ 57 words of extra memory for PDF output out of 10000 (max. 10000000)
 
