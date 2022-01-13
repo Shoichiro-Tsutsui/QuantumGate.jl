@@ -1,0 +1,643 @@
+\documentclass[]{ltjsarticle}
+\usepackage{luatexja}
+
+
+\usepackage{amsmath, amssymb, latexsym, physics, mathrsfs, bm}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage[svgnames]{xcolor}
+\usepackage[
+     colorlinks        = true,
+     unicode           = true,
+     pdfstartview      = FitV,
+     linktocpage       = true,
+     linkcolor         = OrangeRed,
+     citecolor         = MediumSeaGreen,
+     urlcolor          = RoyalBlue,
+     bookmarks         = true,
+     bookmarksnumbered = true,
+     pdftitle={},
+     pdfauthor={筒井翔一朗}
+]{hyperref}
+
+
+%% Numerical constats
+\newcommand{\e}{\mathrm{e}}
+\newcommand{\im}{\mathrm{i}\mkern1mu}
+
+
+%% Derivative
+\newcommand{\del}{\partial}
+
+
+%% Mathcal
+\newcommand{\calD}{\mathcal{D}}
+\newcommand{\calJ}{\mathcal{J}}
+\newcommand{\calK}{\mathcal{K}}
+\newcommand{\calO}{\mathcal{O}}
+
+
+%% Hat (used for operator on Hilbert space)
+\newcommand{\hH}{\hat{H}}
+
+
+%% Mathematical symbols
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\Tprod}{\mathrm{T}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+
+\title{量子モンテカルロ法について}
+
+
+\author{筒井翔一朗}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\maketitle
+\tableofcontents
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{モンテカルロ数値積分}
+一般に、多自由度の積分を区分求積によって数値的に計算することは困難である。
+このような場合に利用されるのがモンテカルロ法である。
+いま、対象の積分が
+\begin{align}
+    I 
+    = 
+    \int dx_1 dx_2 \cdots dx_n 
+    O(x_1,x_2,\cdots,x_n) P(x_1,x_2,\cdots,x_n)
+\end{align}
+という形をしていて、
+$0 \leq P \leq 1$かつ
+$\int dx_1 dx_2 \cdots dx_n P(x_1,x_2,\cdots,x_n) = 1$
+を満たしているとする。
+このとき、$P$は確率密度変数とみなすことができるから、
+積分$I$は$P$に従う確率変数$X_1,X_2,\cdots,X_n$に対する
+$O(X_1,X_2,\cdots,X_n)$の期待値であると考えてもよい。
+従って、積分$I$は
+\begin{align}
+    I 
+    = 
+    \frac{1}{N}\sum_{j=1}^N O(X_1^j,X_2^j,\cdots,X_n^j)
+    +
+    \calO(1/\sqrt{N})
+\end{align}
+と評価することができる。
+ここで、
+$N$はサンプル数、
+$\{X_1^j,X_2^j,\cdots,X_n^j\}$は
+$P$に従う確率変数で、$X_k^j, X_k^{j'} \, (j \neq j')$は独立である。
+$P$が振る舞いの良い確率密度関数ならば、
+大数の法則から$O$の誤差はガウス分布から見積もることができ、
+そのオーダーは$\calO(1/\sqrt{N})$となる。
+モンテカルロ法の優れた点は以下である。
+\begin{enumerate}
+    \item $P$がある領域に鋭いピークをもつような関数の場合、
+    $I$を評価するのにはその領域近傍を考えれば十分であり、
+    定義域全体をくまなく考慮する必要はない。
+    その点モンテカルロ法は、
+    積分に寄与する領域のみを重点的にサンプリングするようになっているため、
+    効率よく$I$を評価できる。
+    \item $I$の誤差は統計誤差であるから、コントロールしやすい。
+\end{enumerate}
+
+
+\subsection{具体例 1}
+積分
+\begin{align}
+    I 
+    =
+    \frac{
+        \int_{-\infty}^\infty dx x^2 e^{-x^2}
+        }{
+        \int_{-\infty}^\infty dx e^{-x^2}
+    } 
+\end{align}
+にモンテカルロ法を適用するには、
+$O(x) = x^2$, $P(x) = e^{-x^2}/\int_{-\infty}^\infty dx e^{-x^2}$
+とすれば良い。
+
+
+
+
+\section{ハイブリッドモンテカルロ法}
+モンテカルロ法を実行するためには、
+確率密度関数$P$に従う確率変数を発生させる必要がある。
+これを実現するアルゴリズムのひとつが、
+ハイブリッドモンテカルロ(HMC)法である。
+以下では$P$として、
+\begin{align}
+    P(x_1,x_2,\cdots,x_n) \propto e^{-S(x_1,x_2,\cdots,x_n)}
+\end{align}
+という関数形を仮定する。
+ちなみに、$P \propto fe^{-S}, \, (f>0)$というタイプの確率密度関数も、
+$e^{-S+\log f}$と書き直して$S-\log f$を新たに$S$と読み替えることで
+上の形に帰着するので、この仮定の範囲内である。
+
+次に、以下のような連立微分方程式
+\begin{align}
+    \frac{dx_i(t)}{dt} &= \frac{\partial H}{\partial p_i(t)} = p_i(t) \\
+    \frac{dp_i(t)}{dt} &= -\frac{\partial H}{\partial x_i(t)} = -\frac{\partial S}{\partial x_i(t)}
+\end{align}
+を考える。。
+ここで$H$は
+\begin{align}
+    H(p_i,x_i) = \frac{1}{2}\sum_{i=1}^n p^2_i + S(x_1,x_2,\dots,x_n)
+\end{align}
+で与えられるものとする。
+$H$ をハミルトニアンと呼び、
+上の微分方程式をハミルトン系\footnote{
+    ハミルトン系を用いるという点から、
+    この手法のことをハミルトニアンモンテカルロ(Hamiltonian Monte Carlo)法と呼ぶ流儀もある。    
+}、あるいは運動方程式と呼ぶ。
+この方程式を、適当な$\{x_i(0)\}$と
+ランダムに発生させた$\{p_i(0)\}$を初期条件として
+$t=0$から$t=1$まで解き、
+得られた$\{x_i(1)\}$をサンプリングするという手順を繰り返すことで、
+平衡分布が$P$であるようなマルコフ連鎖を作ることができる。
+ただし、これを計算機上で実現するためには、
+運動方程式を適切なスキームで離散化して解き、なおかつメトロポリステストと呼ばれる操作を行って、
+数値誤差の影響を補正する必要がある。
+このことを念頭においた上で具体的なアルゴリズムを書き下すと、以下のようになる
+\footnote{
+    手前味噌ですが、\href{https://qiita.com/Shoichiro-Tsutsui/items/8ac73c301ddfd1522e4b}{このページ}で
+    サンプルコードを公開しています。
+}。
+\begin{enumerate}
+    \item $x_i(0)$ を適当にセットする。
+    \item $p_i(0)$ を標準正規分布に従って発生させる。
+    \item 運動方程式を $t=0$ から $t=1$ まで解く。
+        時間刻み幅を $\Delta t = 1/N_t$ とおく。
+        $x_i(l\Delta t) = x_i^{l}$, $p_i(l\Delta t) =p_i^{l}$ と略記する。
+        離散化された運動方程式は以下で与えられる。
+        \begin{align}
+            p_i^{1/2} &= p_i^0 - \frac{1}{2}\frac{\partial S}{\partial x_i^0} \Delta t \\
+            %
+            x_i^{k+1} &= x_i^k + p_i^{k+1/2} \Delta t \\
+            p_i^{k+3/2} &= p_i^{k+1/2} - \frac{\partial S}{\partial x_i^{k+1}} \Delta t \\
+            %
+            x_i^{N_t} &= x_i^{N_t-1} + p_i^{N_t-1/2} \Delta t \\
+            p_i^{N_t} &= p_i^{N_t-1/2} - \frac{1}{2}\frac{\partial S}{\partial x_i^{N_t}} \Delta t
+        \end{align}    
+        ここで、$k = 0,1,\dots,N_t-2$.    
+    \item $r$ を区間 $[0,1]$ の一様分布に従って発生させた確率変数とする。
+        $r$ が不等式    
+        \begin{align}
+            r < \mathrm{min}\{ 1, e^{-\Delta H}\}, \quad 
+            \Delta H = 
+            H(p_i^{N_t},x_i^{N_t})-H(p_i^0,x_i^0)
+        \end{align}
+        を満たすとき、$x_i^{N_t}$ をサンプリングし、これを新たに $x_i^0$ とする。
+        満たさなかった場合はなにもしない。    
+    \item 上のステップを繰り返す。
+\end{enumerate}
+
+
+
+\section{再重み付け法と符号問題}
+モンテカルロ法の重要な仮定は、$P$が正定値であることだった。
+実は$P$が正定値でない場合でも、
+形式的にはモンテカルロ法はいつでも適用可能である。
+
+いま、$P$は正定値とは限らない関数であるとする（複素数値を取っても良い）。
+$P \propto e^{-S}$と表されている場合、
+$S$に虚部があると言ってもよい。
+そのような$P$は一般に
+\begin{align}
+    P(x_1, x_2, \cdots, x_n)
+    \propto 
+    e^{-\Re S(x_1, x_2, \cdots, x_n)}
+    e^{- i\Im S(x_1, x_2, \cdots, x_n)}
+\end{align}
+と表すことができる。
+これを用いて積分$I$を変形していくと、
+\begin{align}
+    I 
+    &=
+    \frac{
+        \int dx_1 \cdots dx_n 
+        O(x_1,\cdots,x_n)     
+        e^{-S(x_1, \cdots, x_n)}    
+    }{
+        \int dx_1 \cdots dx_n 
+        e^{-S(x_1, \cdots, x_n)}    
+    } 
+    \\
+    &= 
+    \frac{
+        \int dx_1 \cdots dx_n 
+        O(x_1,\cdots,x_n)     
+        e^{-\Re S(x_1, \cdots, x_n)}
+        e^{- i\Im S(x_1, \cdots, x_n)}
+    }{
+        \int dx_1 \cdots dx_n 
+        e^{-\Re S(x_1, \cdots, x_n)}
+        e^{- i\Im S(x_1, \cdots, x_n)}
+    } \\
+    &= 
+    \frac{
+        \int dx_1 \cdots dx_n 
+        O(x_1, \cdots,x_n)     
+        e^{-\Re S(x_1, \cdots, x_n)}
+        e^{- i\Im S(x_1, \cdots, x_n)}   
+        / 
+        \int dx_1 \cdots dx_n 
+        e^{-\Re S(x_1, \cdots, x_n)}
+    }{
+        \int dx_1 \cdots dx_n 
+        e^{-\Re S(x_1, \cdots, x_n)}
+        e^{- i\Im S(x_1, \cdots, x_n)}    
+        /
+        \int dx_1 \cdots dx_n 
+        e^{-\Re S(x_1, \cdots, x_n)}
+    }
+\end{align}
+となる。重み関数$P$の下での期待値を$\expval{\cdots}_P$と書くことにすれば、
+\begin{align}
+    I 
+    = 
+    \expval{O}_{e^{-S}}
+    =
+    \frac{\expval{O e^{-i\Im S}}_{e^{-\Re  S}}}{\expval{e^{-i\Im S}}_{e^{-\Re S}}}
+\end{align}
+が成り立つ。
+右辺は$e^{-S}$の代わりに$e^{-\Re S}$が重み関数として登場しているが、
+これは正定値なので確率密度の資格を持ち、モンテカルロ法が適用できる。
+このような書き換えを再重み付け(reweighting)と呼ぶ。
+
+この結果は一見、モンテカルロ法は任意の$P$に適用できることを示しているように見える。
+しかしながら、$P$の性質によっては
+\begin{align}
+    \expval{e^{-i\Im S}}_{e^{-\Re S}}, 
+    \expval{O e^{-i\Im S}}_{e^{-\Re  S}}
+    \sim 
+    e^{-V(n)}
+\end{align}
+のように振る舞う場合があることが知られている。
+ここで$V(n)$積分変数の数に依存して増大するなんらかの関数である。
+すると、これらの期待値を精度良く計算するためには
+\begin{align}
+    e^{-V} &\gg \frac{1}{\sqrt{N}} \\
+    e^{2V} &\ll N
+\end{align}
+のように指数的に大きなサンプル数$N$が必要になってしまう。
+この現象は、$e^{-i\Im S}$が激しい振動関数（正負に激しく揺れる）の場合に発生するので、
+符号問題(sign problem)と呼ばれている。
+物理の文脈では、符号問題は相転移点の近傍で起きることが多い。
+
+
+
+\section{符号問題を回避する方法}
+符号問題の厳しさは$\expval{e^{-i\Im S}}_{e^{-\Re S}}$がどれくらい小さいか、
+という指標(phase factor)で特徴づけることができる。
+もしこれが1に十分近ければ、再重み付け法によって計算することが可能である。
+一方phase factorが0に近い場合は、なんらかの対策が必要である。
+残念ながら、符号問題を完全に解決する方法は知られていない。
+ここでは、ある程度汎用性のある対策をいくつか挙げる
+\footnote{
+    符号問題は有限密度量子色力学の文脈で詳しく研究されていて、
+    \href{http://www2.yukawa.kyoto-u.ac.jp/~soken.editorial/sokendenshi/vol31/Nagata2016GKH_EI.pdf}{
+        日本語のレビュー
+    }
+    もある。
+}。
+
+
+\subsection{テイラー展開法}
+確率分布$P$がパラメータ$\alpha$に依存していて、
+$\alpha = \alpha_0$では符号問題が発生しないとする。
+物理量$O(\alpha)$を$\alpha_0$の周りで展開すると、
+\begin{align}
+    O(\alpha)
+    =
+    \sum_{n} \frac{1}{n!} \frac{\del^n O}{\del \alpha^n}\Big|_{\alpha=\alpha_0} 
+    (\alpha - \alpha_0)^n
+\end{align}
+となる。
+仮定から、
+$\frac{\del^n O}{\del \alpha^n}\Big|_{\alpha=\alpha_0}$
+は符号問題なく計算が可能である。
+これによって$O(\alpha)$を得る方法をテイラー展開法と呼ぶ。
+この手法は当然ながら、テイラー展開の収束半径内で有効であるが、
+問題を解かずして収束半径を知ることは困難なので、
+計算結果の信頼性をどう評価すべきかを、問題に応じて個別に検討しなくてはならない。
+
+
+
+\subsection{解析接続}
+確率分布$P$がパラメータ$\alpha$に依存していて、
+複素$\alpha$平面上のある領域において符号問題が発生しないとする。
+そのような領域で$O(\alpha)$を求めておき、
+領域外へ解析接続することができれば、符号問題を回避することができる。
+ただし、普通は領域内の離散的な点上において$O(\alpha)$が求まるに過ぎないので、
+領域外への外挿には大きな不定性が生じることが多い。
+
+
+
+\subsection{複素ランジュバン法}
+$q_i$を$n$自由度の力学変数とする。
+Langevin方程式
+\begin{align}
+    \frac{d q_i}{dt} = K_i(q) + \eta_i(t)
+\end{align}
+を考える。$K(q)$は駆動項である。
+$\eta_i(t)$は
+\begin{align}
+    \expval{\eta_i(t)} &= 0 \\
+    \expval{\eta_i(t) \eta_j(s)} &= 2\alpha \delta_{ij}\delta(t-s)
+\end{align}
+を満たすGaussianノイズである。
+あるいは、$\eta_i(t)$は次の確率分布に従う確率変数である。
+\begin{align}
+    W_q(x)dx
+    =
+    \prod_i \frac{1}{\sqrt{4\pi\alpha}} 
+    \exp\qty(-\frac{x_i^2}{4\alpha}) dx_i
+    =
+    \frac{1}{(4\pi\alpha)^{n/2}} 
+    \exp\qty(-\frac{\sum_i x_i^2}{4\alpha}) dx
+\end{align}
+$\expval{\dots}$はこの分布に関する統計平均である。
+伊藤型の離散化方程式は
+\begin{align}
+    q_i(t+dt) = q_i(t) + K_i(q) dt + dw_i(t)
+\end{align}
+で、ノイズは、
+\begin{align}
+    \expval{dw_i(t)} &= 0 \\
+    \expval{dw_i(t) dw_j(s)} &= 
+    \begin{cases}
+        0, \quad& t \neq s \\
+        2\alpha \delta_{ij} dt, \quad& t = s
+    \end{cases} 
+\end{align}
+で与えられる。ラフに言って、$\eta_i = dw_i dt$である。
+対応する確率分布関数は、
+\begin{align}
+    W_{dw}(x)dx
+    =
+    \frac{1}{(4\pi\alpha dt)^{n/2}} 
+    \exp\qty(-\frac{\sum_i x_i^2}{4\alpha dt}) dx
+\end{align}
+である。
+離散化されたLangevin方程式のノイズ項のオーダーを明確にするため、
+ノイズ相関が時間刻みに依存しないようにリスケールすることが多い。
+すなわち、$dw_i \to dw \sqrt{dt}$として、
+\begin{align}
+    q_i(t+dt) = q_i(t) + K_i(q) dt + dw_i(t) \sqrt{dt}
+\end{align}
+で、ノイズは、
+\begin{align}
+    \expval{dw_i(t)} &= 0 \\
+    \expval{dw_i(t) dw_j(s)} &= 
+    \begin{cases}
+        0, \quad& t \neq s \\
+        2\alpha \delta_{ij}, \quad& t = s
+    \end{cases} 
+\end{align}
+で与えられる。
+適当なテスト関数$G(q)$に対して、
+\begin{align}
+    \expval{G(q(t))}
+    =
+    \int G(q) \Phi(q,t) dq
+\end{align}
+によって、確率分布関数$\Phi(q,t)$を定義する。
+$\Phi(q,t)$は次のFokker-Planck方程式に従うことが示せる。
+\begin{align}
+    \frac{\del}{\del t} \Phi(q,t)
+    =
+    \qty[
+        -\frac{\del}{\del q_i}K_i + \alpha \frac{\del^2}{\del q_i \del q_i}
+    ]
+    \Phi(q,t)
+\end{align}
+Fokker-Planck方程式の解で
+\begin{align}
+    \frac{\del}{\del t} \Phi_\text{eq}(q) = 0
+\end{align}
+を満たすものを定常解という。
+これは
+\begin{align}
+    \frac{\del}{\del q_i} 
+    \qty[
+        -K_i(q) + \alpha \frac{\del}{\del q_i}
+    ]
+    \Phi_\text{eq}(q) = 0
+\end{align}
+の解である。
+今、駆動項が何か（ポテンシャル）の微分で与えられているとする。
+\begin{align}
+    K_i(q) = - \frac{1}{f} \frac{\del V(q)}{\del q_i}
+\end{align}
+$f$は散逸を特徴づける定数であり、揺動散逸定理から$\alpha f = k T$を満たす。
+すると、
+\begin{align}
+    \frac{\del}{\del q_i} 
+    \qty[
+        \frac{1}{f} \frac{\del V(q)}{\del q_i} + \alpha \frac{\del}{\del q_i}
+    ]
+    \Phi_\text{eq}(q) &= 0 \\
+    %
+    \frac{\del}{\del q_i} 
+    \qty[
+        \frac{\del V(q)}{\del q_i} + kT \frac{\del}{\del q_i}
+    ]
+    \Phi_\text{eq}(q) &= 0
+\end{align}
+となる。
+もし、
+\begin{align}
+    \frac{\del}{\del q_i}\Phi_\text{eq}(q) 
+    = 
+    - \frac{1}{kT} \frac{\del V(q)}{\del q_i}\Phi_\text{eq}(q)
+\end{align}
+ならば、これは定常解である。
+よって、$C$を規格化条件から定まる定数として、
+\begin{align}
+    \Phi_\text{eq}(q) = C \exp\qty(- \frac{V(q)}{kT})
+\end{align}
+はFokker-Planck方程式の定常解である。
+    
+これまでの議論で、
+\begin{align}
+    K_i(q) = -\frac{1}{f}\frac{\del V}{\del q_i} &\to -\frac{\delta S[q]}{\delta q_i}\Bigg|_{q=q(x,t)} \\
+    \alpha &\to \hbar
+\end{align}
+とすると、
+Fokker-Planck方程式の定常分布は、
+\begin{align}
+    \Phi(q, t) \propto \exp\qty(- \frac{V(q)}{kT})
+     = 
+     \exp\qty(- \frac{V(q)}{f\alpha})
+    \to 
+    \exp\qty(-\frac{S[q]}{\hbar})
+\end{align}
+となる。対応するLangevin方程式は
+\begin{align}
+    \frac{d q_i}{dt} &= -\frac{\delta S[q]}{\delta q_i} + \eta_i(x,t) \\
+    \expval{\eta_i(x,t)} &= 0 \\
+    \expval{\eta_i(x,t) \eta_j(y,s)} &= 2\hbar \delta_{ij}\delta^{(4)}(x-y)\delta(t-s)
+\end{align}
+である。
+よって、期待値を
+\begin{align}
+    \frac{\int dq O(q) e^{-S[q]}}{\int dq e^{-S[q]}}
+    =
+    \lim_{T \to \infty} 
+    \frac{1}{T}\int_{t_0}^T \expval{O(q(t))} dt
+\end{align}
+によって計算することができる。
+この手続きは、一定の条件のもとで$S$が複素数の場合にも適用できる。
+これを複素ランジュバン法と呼ぶ。
+
+
+
+\subsection{Lefschetz thimble}
+簡単のため
+\begin{align}
+	Z = \int dx e^{-S(x)}
+\end{align}
+という一次元積分（分配関数と呼ぶ。）を考える。
+複素積分の範囲に拡張して考えると、この積分の積分経路は変更することができる。
+良い性質をもつ積分経路のひとつにLefscetz thimbleと呼ばれるものが知られている。
+作用$S(x)$を複素化したものを$S(z)$としたとき、$\del S/\del z = 0$を満たすような点を臨界点、あるいは固定点と呼ぶ。
+次のflow方程式
+\begin{align}
+	\frac{d z}{d t} = +\overline{\frac{\del S}{\del z}}
+\end{align}
+で定まる曲線のうち、固定点を通るようなものをLefschetz thimbleと呼ぶ。
+固定点を$z_\sigma$とし、対応するLefschetz thimbleを$\calJ_\sigma$と書く。
+このとき、分配関数は以下のように分解することができる。
+\begin{align}
+	Z = \int dx e^{-S(x)} = \sum_{\sigma}n_\sigma \int_{\calJ_\sigma} dz e^{-S(z)}
+\end{align}
+ここで$n_\sigma$は、もとの積分経路と次のflow方程式
+\begin{align}
+	\frac{d z}{d t} = -\overline{\frac{\del S}{\del z}}
+\end{align}
+で定まる曲線の交差数を表す。この曲線をunti-thimbleと呼び、$\calK_\sigma$書く。
+
+各thimble上で、複素作用がどのように変化するかを調べる。
+作用の虚部の変化は
+\begin{align}
+	\frac{d}{dt} \Im S(z)
+	&=
+	\frac{d}{dt} \frac{1}{2i} (S(z) - \overline{S(z)}) \\
+	&=
+	\frac{d}{dt} \frac{1}{2i} (S(z) - S(\overline{z})) \\
+	&=
+	\frac{1}{2i} 
+    \qty(
+        \frac{d}{dt} S(z) - \frac{d}{d t} S(\overline{z})
+    )\\
+	&=
+	\frac{1}{2i}
+    \qty(
+        \frac{dz}{dt} \frac{\del S(z)}{\del z} 
+        - \frac{d\overline{z}}{dt} \frac{\del S(\overline{z})}{\del \overline{z}}     
+    ) \\
+	&=
+	\frac{1}{2i}
+    \qty(
+        \frac{dz}{dt} \frac{\del S(z)}{\del z} 
+        - \frac{d\overline{z}}{dt} \overline{\frac{\del S(z)}{\del z}}     
+    ) \\
+	&=
+	\frac{1}{2i}
+    \qty(
+        -\overline{\frac{\del S(z)}{\del z}} \frac{\del S(z)}{\del z} 
+        + \frac{\del S(z)}{\del z} \overline{\frac{\del S(z)}{\del z}}     
+    )\\
+	&=
+	0
+\end{align}
+となる。
+作用の虚部がthinble上で変化しないことから、その部分を積分の外に出すことができて、分配関数を
+\begin{align}
+	Z = \int dx e^{-S(x)} = \sum_{n_\sigma} e^{-\Im S(z_\sigma)} \int_{\calJ_\sigma} dz e^{-\Re S(z)}
+\end{align}
+と書くことができる。
+$J_\sigma$上で作用の実部は、
+\begin{align}
+	\frac{d}{dt} \Re S(z)
+	&=
+	\frac{d}{dt} \frac{1}{2} (S(z) + \overline{S(z)}) \\
+	&=
+	\frac{d}{dt} \frac{1}{2} (S(z) + S(\overline{z})) \\
+	&=
+	\frac{1}{2} 
+    \qty(
+        \frac{d}{dt} S(z) + \frac{d}{d t} S(\overline{z})        
+    ) \\
+	&=
+	\frac{1}{2}
+    \qty(
+        \frac{dz}{dt} \frac{\del S(z)}{\del z} 
+        + \frac{d\overline{z}}{dt} \frac{\del S(\overline{z})}{\del \overline{z}}     
+    ) \\
+	&=
+	\frac{1}{2}
+    \qty(
+        \frac{dz}{dt} \frac{\del S(z)}{\del z} 
+        + \frac{d\overline{z}}{dt} \overline{\frac{\del S(z)}{\del z}}     
+    )\\
+	&=
+	\frac{1}{2}
+    \qty(
+        \overline{\frac{\del S(z)}{\del z}} \frac{\del S(z)}{\del z} 
+        + \frac{\del S(z)}{\del z} \overline{\frac{\del S(z)}{\del z}}     
+    ) \\
+	&=
+	\Bigg| \frac{\del S(z)}{\del z} \Bigg|^2 \geq 0
+\end{align}
+のように変化する。
+まったく同様にして、$\calK_\sigma\sigma$上では、
+\begin{align}
+	\frac{d}{dt} \Re S(z)
+	=-\Bigg| \frac{\del S(z)}{\del z} \Bigg|^2 \leq 0
+\end{align}
+のように変化する。
+したがって、固定点から離れるにつれて、$\calJ_\sigma$上では$e^{-\Re S(z)}$が小さくなり、
+$\calK_\sigma$上では大きくなる
+\footnote{
+	flow方程式の符号は人によって定義が異なるので注意。
+	例えば、分配関数を
+	\begin{align}
+		Z = \int dx e^{+S(x)}
+	\end{align}
+	のように作用の前の符号をプラスで定義した場合は、thimbleを定めるflow方程式は
+	\begin{align}
+		\frac{d z}{d t} = -\overline{\frac{\del S}{\del z}}
+	\end{align}
+	である。
+}。
+以上の議論から、
+thimble上の積分は収束性が良く、かつ振動がないので、
+符号問題なく計算することが可能である。
+この手法は多重積分にもそのまま拡張可能である。
+ただし、thimbleを具体的に求めるのは困難なので、
+応用上はもとの積分経路とthimbleの間にある中間多様体上での積分を行うべきである。
+また、変数変換に伴うヤコビアンの計算が重いことに留意すべきである。
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{量子計算のモンテカルロ法への応用}
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\bibliography{sample.bib}
+%\bibliographystyle{h-physrev5}
+
+
+\end{document}
