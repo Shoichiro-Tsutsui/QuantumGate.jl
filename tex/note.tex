@@ -3,8 +3,8 @@
 
 
 \usepackage{amsmath, amssymb, latexsym, mathrsfs, bm}
-\usepackage[braket, qm]{qcircuit}
-%\usepackage{braket}
+\usepackage[qm]{qcircuit}
+\usepackage{braket}
 \usepackage{graphicx}
 \usepackage{grffile}
 \usepackage[svgnames]{xcolor}
@@ -47,6 +47,9 @@
 \renewcommand{\Re}{\mathrm{Re}}
 \renewcommand{\Im}{\mathrm{Im}}
 
+\newcommand{\complex}{\mathbb{C}}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
@@ -60,6 +63,9 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \maketitle
+\begin{abstract}
+    これは、ものすごい勢いで量子計算について学ぶためのノートです。
+\end{abstract}
 \tableofcontents
 
 
@@ -169,109 +175,6 @@ Hadamardゲート
     +
     \frac{k_n}{2^{n-l+1}}
 \end{align}
-
-
-\section{基本的な計算結果}
-Xゲートは
-\begin{align}
-    X\ket{0} 
-    &=
-    \begin{pmatrix}
-        0 & 1 \\ 1 & 0 
-    \end{pmatrix} 
-    \begin{pmatrix}
-        1 \\ 0 
-    \end{pmatrix} 
-    =
-    \begin{pmatrix}
-        0 \\ 1 
-    \end{pmatrix}
-    =
-    \ket{1}  \\
-    %
-    X\ket{1} 
-    &=
-    \begin{pmatrix}
-        0 & 1 \\ 1 & 0 
-    \end{pmatrix} 
-    \begin{pmatrix}
-        0 \\ 1 
-    \end{pmatrix} 
-    =
-    \begin{pmatrix}
-        1 \\ 0 
-    \end{pmatrix}
-    =
-    \ket{0}
-\end{align}
-のように0,1を反転させるので、NOTの役割をする。
-
-
-アダマールゲートによる演算。
-\begin{align}
-    H \ket{0}
-    &=
-    \frac{1}{\sqrt{2}}
-    \begin{pmatrix}
-        1 & 1 \\
-        1 & -1
-    \end{pmatrix}
-    \begin{pmatrix}
-        1 \\ 0
-    \end{pmatrix}
-    =
-    \frac{1}{\sqrt{2}}
-    \begin{pmatrix}
-        1 \\ 1
-    \end{pmatrix}
-    =
-    \frac{\ket{0} + \ket{1}}{\sqrt{2}} \\
-    %
-    H \ket{1}
-    &=
-    \frac{1}{\sqrt{2}}
-    \begin{pmatrix}
-        1 & 1 \\
-        1 & -1
-    \end{pmatrix}
-    \begin{pmatrix}
-        0 \\ 1
-    \end{pmatrix}
-    =
-    \frac{1}{\sqrt{2}}
-    \begin{pmatrix}
-        1 \\ -1
-    \end{pmatrix}
-    =
-    \frac{\ket{0} - \ket{1}}{\sqrt{2}}
-\end{align}
-
-量子状態と測定確率。
-規格化された状態
-\begin{align}
-    \ket{\psi} 
-    =
-    \frac{\alpha}{\sqrt{|\alpha|^2+|\alpha|^2}} 
-    \ket{0}   
-    +
-    \frac{\beta}{\sqrt{|\alpha|^2+|\alpha|^2}} 
-    \ket{1}   
-\end{align}
-があったとする。
-この状態を測定して$\ket{0}$が観測される確率は
-\begin{align}
-    P_0
-    =
-    |\ket{0}\bra{0}\ket{\psi}|^2
-    =
-    |\bra{0}\ket{\psi}|^2
-    =
-    \frac{|\alpha|^2}{|\alpha|^2 + |\beta|^2}
-\end{align}
-である。
-
-
-10進数と2進数の関係。
 $(k)_2 = k_1 k_2 \cdots k_n$のとき
 \begin{align}
     k 
@@ -298,8 +201,90 @@ $(k)_2 = k_1 k_2 \cdots k_n$のとき
 \end{align}
 
 
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{測定について}
+\section{測定}
+\subsection{射影測定}
+$A$を物理量、すなわちエルミート演算子とする。
+$A$の固有値と固有ベクトルをそれぞれa, $\ket{a}$とする。
+$a$は離散的な値を取るものとする。
+\begin{align}
+    A\ket{a} = a\ket{a}
+\end{align}
+量子力学における測定とは、$A$の固有値を測る行為のことである。
+一般に、測定のたびに得られる固有値は異なり、
+状態$\ket{\psi}$に対して$A$を測定して、
+固有値$a$が得られる確率は
+\begin{align}
+    P_a = |\ket{a}\braket{a|\psi}|^2
+\end{align}
+で与えられる。
+測定が行われた後の状態は
+\begin{align}
+    \frac{1}{|\ket{a}\braket{a|\psi}|}\ket{a}\braket{a|\psi}
+\end{align}
+となる。
+
+例えば、状態
+\begin{align}
+    \ket{\psi} 
+    =
+    \alpha\ket{0}   
+    +
+    \beta\ket{1}, \quad 
+    %
+    |\alpha|^2 + |\beta|^2 = 1
+\end{align}
+に対して、
+\begin{align}
+    Z =
+    \begin{pmatrix}
+        1 & 0 \\
+        0 & -1
+    \end{pmatrix}
+\end{align}
+の固有値を測定することを考える。
+$\ket{0}$, $\ket{1}$は$Z$の固有状態である。
+\begin{align}
+    Z \ket{0} = \ket{0}, \quad 
+    Z \ket{1} = -\ket{1} 
+\end{align}
+よって、測定値が1である確率は
+\begin{align}
+    P_01
+    = 
+    |\ket{0}\braket{0|\psi}|^2
+    =
+    |\braket{0|\psi}|^2
+    =
+    |\alpha|^2
+\end{align}
+であり、測定値が$-1$である確率は
+\begin{align}
+    P_{-1} = |\beta|^2
+\end{align}
+である。
+この測定は頻繁に登場するが、
+$\ket{\psi}$が$\ket{0}$ or $\ket{1}$のどっちになっているかを測定する、
+という言い方をする場合がある。
+
+また、状態空間がテンソル積で与えられていて、
+部分系のみを測定するということも可能である。
+状態$\ket{\psi}\otimes\ket{\psi'}$
+に対して、1番目の部分系に作用する演算子$A$を測定して、
+固有値$a$が得られる確率は
+\begin{align}
+    P_a 
+    = |(\ket{a}\bra{a} \otimes I) \ket{\psi}\otimes\ket{\psi'}|^2
+    = |\ket{a}\braket{a|\psi}\otimes\ket{\psi'}|^2
+\end{align}
+で与えられる。
+
+
+
+\subsection{POVM}
 ここでは有限次元のHilbert空間のみ考える。
 半正定値行列のセット$\{F_i\}$で
 \begin{align}
@@ -361,8 +346,659 @@ positive operator-valued measure (POVM)
 これはいわゆるBornの規則である。
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{量子ビットと演算}
+古典計算機では、$0,1$の2値を取りうるbitたちと、
+NOT, AND, ORなどの論理演算を電子回路を用いて実装でき、
+これらを駆使して様々なアルゴリズムを構成している。
+一方量子計算機では、
+bitの役割を果たすのは内部自由度が2の量子論的な粒子である。
+これをqubitと呼ぶ。
+qubitの振る舞いは量子力学によって記述される。
+\begin{enumerate}
+    \item ひとつのqubitの状態は、$\complex$上の2次元Hilbert空間の元で表すことができる。
+    \item 複数のqubitがある場合はそれらのテンソル積で表現される。(例えば、$N$個のqubit系は$2^N$次元のHilbert空間の元である。)
+    \item qubit系が孤立しているとき、qubit系の時間変化はユニタリー変換を用いて記述される。
+\end{enumerate}
+量子計算機では、qubit系にユニタリー変換を繰り返し作用させることで、
+所望のアルゴリズムを構成する。
+ユニタリー変換しか許さないというのは強力な縛りで、
+古典計算機とはずいぶん様子が異なる。
+（例えばANDを考えてみよ。）
+
+古典的な計算においては、
+任意の論理関数がNOTとANDの組み合わせで表現できることが証明でき、
+このとき組\{NOT, AND\}は万能であるというのだった。
+このような性質のために、どんなに複雑な操作も、
+単純な論理演算の組み合わせで表現することができる。
+これは実機を作る上で重要である。
+量子計算にも同様の性質がある。
+
+
+\subsection{1 bitユニタリー変換}
+ここでは1 qubit系とそれに作用するユニタリー変換を考える。
+1 qubitの状態は一般に、
+\begin{align}
+    \ket{\psi} 
+    =
+    \alpha \ket{0} + \beta\ket{1}
+\end{align}
+と表すことができる。
+ここで、
+\begin{align}
+    \ket{0} 
+    = 
+    \begin{pmatrix}
+    1 \\ 0    
+    \end{pmatrix}, \quad 
+    %
+    \ket{1} 
+    = 
+    \begin{pmatrix}
+    0 \\ 1    
+    \end{pmatrix},
+\end{align}
+である。これらを計算機基底と呼ぶ。
+また、$\alpha, \beta$は$|\alpha|^2 + |\beta|^2 = 1$を満たす複素数で、
+しばしば
+\begin{align}
+    \alpha = \cos\frac{\theta}{2}, \quad 
+    \beta = e^{i\phi}\sin\frac{\theta}{2}
+\end{align}
+とパラメトライズする。
+$\theta, \phi$は実数である。
+これらを指定すると、半径1の球面上の一点が指定される。
+この球面のことをBloch球と呼ぶ。
+1 qubit状態に作用するユニタリー変換は、サイズ2の行列で表現することができる。
+\begin{align}
+    U = 
+    \begin{pmatrix}
+        u_{11} & u_{12} \\
+        u_{21} & u_{22}
+    \end{pmatrix}, \quad u_{ij} \in \complex
+\end{align}
+（この独立なパラメータの数は4）
+ユニタリー変換は、Bloch球の点を移す変換になっているはずである。
+$x,y,z$軸周りの$\theta$回転は
+\begin{align}
+    e^{-i(\theta/2)A} = \cos\frac{\theta}{2}I - i\sin\frac{\theta}{2}A,
+    \quad 
+    A = X, Y, Z
+\end{align}
+で表される。
+ここで、
+\begin{align}
+    X = 
+    \begin{pmatrix}
+    0 & 1 \\ 1 & 0     
+    \end{pmatrix},\quad 
+    %
+    Y = 
+    \begin{pmatrix}
+    0 & -i \\ i & 0     
+    \end{pmatrix},\quad 
+    %
+    Z = 
+    \begin{pmatrix}
+    1 & 0 \\ 0 & -1     
+    \end{pmatrix} 
+\end{align}
+である。
+これらをPauli行列（ゲート）と呼び、以下の性質がある。
+\begin{align}
+    X^2 &= Y^2 = Z^2 = I \\
+    XY - YX &= iZ, \quad 
+    YZ - ZX = iX, \quad 
+    ZX - XZ = iy, \quad \\
+    XY + YX &= YZ + ZY = ZX + XZ = 0
+\end{align}
+実際例えば、
+\begin{align}
+    e^{-i(\theta'/2)Z}\ket{\psi} 
+    &=
+    \left(
+        \cos\frac{\theta'}{2}I - i\sin\frac{\theta'}{2}Z
+    \right)
+    \left(
+        \cos\frac{\theta}{2} \ket{0} + e^{i\phi}\sin\frac{\theta}{2}\ket{1}
+    \right) \\
+    &=
+    \cos\frac{\theta'}{2} \cos\frac{\theta}{2} \ket{0} 
+    + 
+    \cos\frac{\theta'}{2} e^{i\phi}\sin\frac{\theta}{2}\ket{1}
+    -
+    i\sin\frac{\theta'}{2} \cos\frac{\theta}{2}\ket{0} 
+    + 
+    i\sin\frac{\theta'}{2} e^{i\phi}\sin\frac{\theta}{2} \ket{1} \\
+    &=
+    e^{-i\theta'/2}\cos\frac{\theta}{2}\ket{0}
+    +
+    e^{i\theta'/2}e^{i\phi}\sin\frac{\theta}{2}\ket{1} \\
+    &=
+    e^{-i\theta'/2}
+    \left(
+        \cos\frac{\theta}{2}\ket{0}
+        +
+        e^{i\phi+\theta'}\sin\frac{\theta}{2}\ket{1}
+    \right)
+\end{align}
+などにより、全体の位相を除いて確かに回転になっていることが確認できる。
+よって一般に、
+\begin{align}
+    U = e^{i\alpha} e^{-i(\beta/2)Z} e^{-i(\gamma/2)Y} e^{-i(\delta/2)Z}
+\end{align}
+のように表すことができる。$\beta, \gamma, \delta$はEuler角である。
+（パラメターが4つ）
+
+このような$U$を少数のユニタリー変換の積で表すことができるのだろうか？
+実は次が示せる。
+\begin{itemize}
+    \item $H,T$の積によって、任意の$U$をいくらでも精度良く近似できる。
+\end{itemize}
+ここで、
+\begin{align}
+    H 
+    = 
+    \frac{1}{\sqrt{2}}
+    \begin{pmatrix}
+        1 & 1 \\
+        1 & -1
+    \end{pmatrix}, \quad 
+    %
+    T
+    = 
+    e^{-i(\pi/8)Z}
+\end{align}
+である。$H$をHadamardゲートと呼ぶ。
+これを示そう。
+まずHadamardゲートについて
+\begin{align}
+    H^{-1} = H, \quad 
+    X = HZH
+\end{align}
+が成り立つことに注意すれば、
+\begin{align}
+    HTH 
+    = 
+    He^{-i(\pi/8)Z}H 
+    =
+    H\left( 
+        \cos\frac{\pi}{8}I - i\sin\frac{\pi}{8}Z
+    \right)H
+    =
+    \cos\frac{\pi}{8}I - i\sin\frac{\pi}{8}X
+    =
+    e^{-i(\pi/8)X}
+\end{align}
+である。
+ここで、$V = THTH$を考え、これがある軸回りの回転を引き起こすことを見る。
+一般に、$\vec{n} = (n_x. n_y, n_z)$軸回りの$\theta$回転は
+\begin{align}
+    e^{-i\theta \vec{n}\cdot\vec{\sigma}/2}
+    &=
+    1 
+    + \left( -i\frac{\theta}{2}\vec{n}\cdot\vec{\sigma} \right)
+    + \frac{1}{2}\left( -i\frac{\theta}{2} \vec{n}\cdot\vec{\sigma} \right)^2
+    + \frac{1}{3!}\left( -i\frac{\theta}{2} \vec{n}\cdot\vec{\sigma} \right)^3 
+    + \cdots \\
+    &=
+    1 
+    - i \left( \frac{\theta}{2} \right) \vec{n}\cdot\vec{\sigma}
+    - \frac{1}{2}\left( \frac{\theta}{2} \right)^2
+    + i \frac{1}{3!}\left( \frac{\theta}{2} \right)^3 \vec{n}\cdot\vec{\sigma} 
+    + \cdots \\
+    &=
+    \cos\frac{\theta}{2}I 
+    -
+    i\sin\frac{\theta}{2}
+    (n_xX + n_yY + n_zZ)
+\end{align}
+と表されることに注意する。
+ただしここで、
+\begin{align}
+    (\vec{n}\cdot\vec{\sigma})^2
+    &=
+    (n_x X + n_y Y + n_z Z)^2 \\
+    &=
+    n_x^2 X^2 + n_y^2 Y^2 + n_z^2 Z^2
+    + n_xn_y (XY + YX)
+    + n_yn_z (YZ + ZY)
+    + n_zn_x (ZX + XZ) \\
+    &=
+    I
+\end{align}
+を用いた。
+\begin{align}
+    V 
+    &= 
+    e^{-i(\pi/8)Z}e^{-i(\pi/8)X} \\
+    &= 
+    \left( 
+        \cos\frac{\pi}{8}I - i\sin\frac{\pi}{8}Z
+    \right)
+    \left( 
+        \cos\frac{\pi}{8}I - i\sin\frac{\pi}{8}X
+    \right) \\
+    &=
+    \cos^2\frac{\pi}{8}I
+    -
+    \sin^2\frac{\pi}{8}ZX
+    -
+    i\cos\frac{\pi}{8}\sin\frac{\pi}{8}Z
+    -
+    i\cos\frac{\pi}{8}\sin\frac{\pi}{8}X \\
+    &=
+    \cos^2\frac{\pi}{8}I
+    -
+    \sin^2\frac{\pi}{8}(iY)
+    -
+    i\cos\frac{\pi}{8}\sin\frac{\pi}{8}Z
+    -
+    i\cos\frac{\pi}{8}\sin\frac{\pi}{8}X \\
+    &=
+    \cos^2\frac{\pi}{8}I
+    -
+    i\sin\frac{\pi}{8}
+    \left(
+        \cos\frac{\pi}{8} X
+        +
+        \sin\frac{\pi}{8} Y
+        +
+        \cos\frac{\pi}{8} Z
+    \right)
+\end{align}
+である。
+よって、$V$はある軸回りの回転で、その角度は
+\begin{align}
+    \theta 
+    = 2\arccos\frac{2 + \sqrt{2}}{4}
+    = \arccos \frac{2\sqrt{2}-1}{4}
+\end{align}
+である。
+これは$\pi$の無理数倍だから、$V$を何度もかけると、
+この軸周りの任意の回転を任意の精度で近似できる。
+次に$V'=HVH$を考えると、また別の軸の周りの回転について同様のことが言える。
+以上を組み合わせることで証明終了。
+
+ちなみに、$\theta$が$\pi$の無理数倍であることは、
+$e^{2\pi i \theta}$が$x^4 + x^3 + \frac{1}{4}x^2 + x + 1$
+という円分多項式でない多項式のの根であることから従う。
+\href{https://arxiv.org/abs/quant-ph/9906054}{
+    P. O. Boykin, T. Mor, M. Pulver, V. Roychowdhury, and F. Vatan: 
+    arXiv:quant-ph/9906054}
+また、Solovay-Kitaevにより、近似に必要なゲートの数は
+高々多項式オーダーであることが示されている。
+
+
+
+\subsection{2 level ユニタリー変換}
+1 bitに作用するユニタリー変換はサイズ2の行列であった。
+実は、どんなユニタリー変換も、実質サイズ2の行列の積で表すことができる。
+例として、
+\begin{align}
+    U = 
+    \begin{pmatrix}
+        a & * & * \\
+        b & * & * \\
+        * & * & * 
+    \end{pmatrix}
+\end{align}
+を考える。
+ここで、2-levelのユニタリー行列として
+\begin{align}
+    U_1 
+    =
+    \frac{1}{\sqrt{|a|^2 + |b|^2}}
+    \begin{pmatrix}
+        a^* & b^* & 0 \\
+        b & -a & 0 \\
+        0 & 0 & 1 
+    \end{pmatrix}
+\end{align}
+というものを考える。これがユニタリーであることは
+\begin{align}
+    U_1^{-1}
+    =
+    \frac{1}{\sqrt{|a|^2 + |b|^2}}
+    \begin{pmatrix}
+        a & b & 0 \\
+        b^* & -a^* & 0 \\
+        0 & 0 & 1 
+    \end{pmatrix}
+\end{align}
+から分かる。$U_1$を$U$にかけると
+\begin{align}
+    U_1U =
+    \begin{pmatrix}
+        * & * & * \\
+        0 & * & * \\
+        * & * & * 
+    \end{pmatrix}
+\end{align}
+のようにある成分が0になる。
+同じようなことをもう一度やると、
+\begin{align}
+    U_2U_1U =
+    \begin{pmatrix}
+        1 & * & * \\
+        0 & c & d \\
+        0 & e & f 
+    \end{pmatrix}
+\end{align}
+の形にできる。
+$U_2U_1U$はユニタリーだからこの段階で自動的に
+\begin{align}
+    U_2U_1U =
+    \begin{pmatrix}
+        1 & 0 & 0 \\
+        0 & c & d \\
+        0 & e & f 
+    \end{pmatrix}
+\end{align}
+となっているはずである。
+最後に
+\begin{align}
+    U_3 =
+    \begin{pmatrix}
+        1 & 0 & 0 \\
+        0 & c & d \\
+        0 & e & f 
+    \end{pmatrix}^{-1}   
+\end{align}
+とおけば、$U_3U_2U_1U=I$となる。
+よって、$U = U_1^\dagger U_2^\dagger U_3^\dagger$と分解できた。
+もっとサイズの大きな$U$についても同様の分解が可能である。
+
+
+
+\subsection{2 bitユニタリー変換}
+前節の議論から、任意の2つの成分に作用するユニタリー変換が構成できれば十分だということが分かった。
+2 bit系の場合についてこれが可能なことを示そう。
+2 bit系の基底は$\ket{00}, \ket{01}, \ket{10}, \ket{11}$である。
+具体的に計算してみると、
+\begin{align}
+    \ket{00} 
+    =
+    \begin{pmatrix}
+        1 \\ 0    
+    \end{pmatrix}
+    \otimes
+    \begin{pmatrix}
+        1 \\ 0    
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        1 \\ 0 \\ 0 \\ 0   
+    \end{pmatrix} \\
+    %
+    \ket{01} 
+    =
+    \begin{pmatrix}
+        1 \\ 0    
+    \end{pmatrix}
+    \otimes
+    \begin{pmatrix}
+        0 \\ 1    
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        0 \\ 1 \\ 0 \\ 0   
+    \end{pmatrix} \\
+    %
+    \ket{10} 
+    =
+    \begin{pmatrix}
+        0 \\ 1    
+    \end{pmatrix}
+    \otimes
+    \begin{pmatrix}
+        1 \\ 0    
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        0 \\ 0 \\ 1 \\ 0   
+    \end{pmatrix} \\
+    %
+    \ket{11} 
+    =
+    \begin{pmatrix}
+        0 \\ 1    
+    \end{pmatrix}
+    \otimes
+    \begin{pmatrix}
+        0 \\ 1    
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        0 \\ 0 \\ 0 \\ 1
+    \end{pmatrix}
+\end{align}
+というものである。ここで$\otimes$はKronecker積
+\begin{align}
+    A \otimes B 
+    \equiv
+    \begin{pmatrix}
+        a_{11}B & \dots & a_{1N}B \\
+        \vdots & \ddots & \vdots \\
+        a_{N1}B & \dots & a_{NN}B
+    \end{pmatrix}
+\end{align}
+である。
+ユニタリー変換として$\ket{10}, \ket{11}$だけに作用する
+\begin{align}
+    \Lambda(V)
+    =
+    \begin{pmatrix}
+        1 & 0 & 0 & 0 \\ 
+        0 & 1 & 0 & 0 \\ 
+        0 & 0 & a & b \\ 
+        0 & 0 & c & d \\ 
+    \end{pmatrix}
+\end{align}
+を考える。
+これは
+\begin{align}
+    \Lambda(V) = \ket{0}\bra{0} \otimes I + \ket{1}\bra{1} \otimes V, \quad 
+    %
+    \ket{0}\bra{0}
+    =
+    \begin{pmatrix}
+        1 & 0 \\
+        0 & 0  
+    \end{pmatrix},\quad
+    %
+    \ket{1}\bra{1}
+    =
+    \begin{pmatrix}
+        0 & 0 \\
+        0 & 1  
+    \end{pmatrix},\quad
+    V = 
+    \begin{pmatrix}
+        a & b \\
+        c & d  
+    \end{pmatrix}
+\end{align}
+と書くことができる。
+このように、$\ket{0}, \ket{1}$への射影演算子を用いて書かれるゲートを
+制御$V$ゲートと呼ぶ。
+射影演算子が作用するbitを制御bit,
+ユニタリー演算子が作用するbitをtarget bitと呼ぶ。
+
+次に、$\ket{00}$と$\ket{11}$だけに作用するもの
+\begin{align}
+    \begin{pmatrix}
+        a & 0 & 0 & b \\ 
+        0 & 1 & 0 & 0 \\ 
+        0 & 0 & 1 & b \\ 
+        c & 0 & 0 & d \\ 
+    \end{pmatrix}
+\end{align}
+を考える。
+この場合も
+\begin{enumerate}
+    \item $\ket{00}$と$\ket{10}$をswapする。
+    \item $V$を作用させる。
+    \item $\ket{00}$と$\ket{10}$をswapする。
+\end{enumerate}
+によって、$\Lambda(V)$を作用させる計算に帰着できる。
+$\ket{00}$と$\ket{10}$をswapは、「2番目のbitが0ならば1番目のbitを反転させよ」
+と読めば、制御演算で表せることが分かる。
+具体的には
+\begin{align}
+    \text{SWAP} = X \otimes \ket{0}\bra{0} + I \otimes \ket{1}\bra{1}
+\end{align}
+である。この作用を具体的に計算すると、
+\begin{align}
+    \text{SWAP} \ket{00} &= \ket{10} \\
+    \text{SWAP} \ket{01} &= \ket{01} \\
+    \text{SWAP} \ket{10} &= \ket{00} \\
+    \text{SWAP} \ket{11} &= \ket{11}
+\end{align}
+となる。
+行列表示すると
+\begin{align}
+    \text{SWAP}
+    =
+    \begin{pmatrix}
+        0 & 0 & 1 & 0 \\
+        0 & 1 & 0 & 0 \\
+        1 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 1
+    \end{pmatrix}
+\end{align}
+である。
+具体的に計算してみると
+\begin{align}
+    \text{SWAP}\,\Lambda(V)\,\text{SWAP}
+    &=
+    \begin{pmatrix}
+        0 & 0 & 1 & 0 \\
+        0 & 1 & 0 & 0 \\
+        1 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 1
+    \end{pmatrix}
+    \begin{pmatrix}
+        1 & 0 & 0 & 0 \\ 
+        0 & 1 & 0 & 0 \\ 
+        0 & 0 & a & b \\ 
+        0 & 0 & c & d \\ 
+    \end{pmatrix}
+    \begin{pmatrix}
+        0 & 0 & 1 & 0 \\
+        0 & 1 & 0 & 0 \\
+        1 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 1
+    \end{pmatrix}    \\
+    &=
+    \begin{pmatrix}
+        0 & 0 & 1 & 0 \\
+        0 & 1 & 0 & 0 \\
+        1 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 1
+    \end{pmatrix}    
+    \begin{pmatrix}
+        0 & 0 & 1 & 0 \\
+        0 & 1 & 0 & 0 \\
+        a & 0 & 0 & b \\
+        c & 0 & 0 & d
+    \end{pmatrix}    \\
+    &=
+    \begin{pmatrix}
+        a & 0 & 0 & b \\ 
+        0 & 1 & 0 & 0 \\ 
+        0 & 0 & 1 & b \\ 
+        c & 0 & 0 & d \\ 
+    \end{pmatrix}
+\end{align}
+となって確かに所望のユニタリー変換が得られている。
+
+このようにして、bit swapと制御ユニタリー変換をを組み合わせれば、
+任意の2 levelユニタリー変換を構成することができる。
+
+制御演算のうち、
+\begin{align}
+    \Lambda(X) = \ket{0}\bra{0} \otimes I + \ket{1}\bra{1} \otimes X, \quad 
+\end{align}
+を制御NOTゲート、あるいはCNOTゲートと呼ぶ。
+実は、任意の制御ユニタリーゲートは、CNOT, H, Tを用いて表すことができる。
+
+
+\subsection{3 bit以上のユニタリー変換}
+3 bit系でswapをやろうとすると、制御bitが2つのNOTが必要になる。
+これをToffoliゲートと呼ぶ。
+ToffoliゲートはCNOTとTゲートに分解できる。
+また、Toffoliゲートを組み合わせれば、制御bitが3つ以上のNOTも作れる。
+こうして、
+CNOT, H, Tの3つのゲートによって任意のユニタリー変換をいくらでも精度良く近似できることが分かった。
+この3つのゲートが、量子計算機における万能の組である。
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{基本的な量子アルゴリズム}
+\subsection{量子計算機で実行できる操作のまとめ}
+量子計算には重要な制約がある。
+\begin{enumerate}
+    \item アルゴリズムはユニタリー演算として表されなければならない
+    \item 出力を得るために測定と呼ばれる操作を行わなければならない
+\end{enumerate}
+
+
+各qubitに対してユニタリー演算子を作用させることができる。
+例えば
+\begin{align}
+    U \ket{\psi} = \ket{\psi'}
+\end{align}
+といった操作が可能である。
+これを、
+\[ 
+    \Qcircuit 
+    @C=1em @R=1em 
+    {
+        \lstick{\ket{\psi}} & \qw & \gate{U} & \qw & \rstick{\ket{\psi'}}\qw
+    }
+\]
+と表す。
+複数のqubitがある場合は、どのqubitに作用するのかを明示するために
+\begin{align}
+    U_j = I \otimes \cdots \otimes U \otimes \cdots \otimes I
+\end{align}
+という記法を用いる。例えば、
+\begin{align}
+    U_0 \ket{\psi_0}\ket{\psi_1} 
+    = 
+    (U \ket{\psi_0})\ket{\psi_1} 
+    = 
+    \ket{\psi'_0}\ket{\psi_1}
+\end{align}
+である。
+これは以下のように表す。
+\[ 
+    \Qcircuit 
+    @C=1em @R=1em 
+    {
+        \lstick{\ket{\psi_0}} & \qw & \gate{U} & \qw & \rstick{\ket{\psi'_0}}\qw \\
+        \lstick{\ket{\psi_1}} & \qw & \qw & \qw & \rstick{\ket{\psi_1}}\qw 
+    }
+\]
+
+上記に加えて、制御ユニタリー演算というものを作用させることができる。
+$j$番のqubitを制御系とする$k$番のqubitに対する制御ユニタリー演算とは、
+\begin{align}
+    \Lambda_{jk}(U)
+    =
+    \cdots \otimes \underbrace{\ket{0}\bra{0}I}_{j}
+    \otimes \cdots \otimes \underbrace{\ket{1}\bra{1}I}_{k} 
+    \otimes \cdots
+\end{align}
+である。$\cdots$で省略したところにはすべて$I$が入る。
+特に、$U=X$の場合をCNOTゲートと呼ぶ。
+
+
+
 
 \subsection{アダマールテスト}
 $U$をユニタリー演算子とする。
@@ -1055,6 +1691,199 @@ $\lambda_l/2\pi$は次のように2進展開できる:
 
 
 
+\subsection{Shorの素因数分解アルゴリズム}
+正の$N$を整数とし、これを素因数分解したいものとする。
+$N$と互いに素な数$x$を用意し、
+\begin{align}
+    x^r = 1 \mod N
+\end{align}
+とおく。
+これを満たす最小の$r$を$x$の位数と呼ぶ。
+大概の場合、位数は偶数になることが知られているらしいので、
+以下それを仮定する。
+このとき、$x^r - 1$を因数分解することができて
+\begin{align}
+    (x^{r/2}-1)(x^{r/2}+1) = 0 \mod N
+\end{align}
+である。
+これが成り立つのは
+\begin{itemize}
+    \item $x^{r/2}\pm 1 = 0 \mod N$である。
+    \item $(x^{r/2}-1)$, $(x^{r/2}+1)$が$N$と非自明な公約数を持つ。
+\end{itemize}
+のどちらかの場合であるが、実は後者になる場合が多いらしいので、
+以下それを仮定する。
+するとユークリッドの互除法により、
+$(x^{r/2}-1)$, $(x^{r/2}+1)$が$N$と非自明な公約数を計算することができ、
+$N$の因数がひとつ判明する。
+これを繰り返すことで素因数分解が完了する。
+
+例)
+うまくいく場合。
+\begin{enumerate}
+    \item $N=57$とする。 
+    \item $x = 5$を取る。
+    \item \href{https://www.wolframalpha.com/input?i=5%5Er+-+1+%3D+0+mod+57&lang=ja}{$r = 18$となる。}
+    \item $x^{r/2}-1 = 5^9-1 = 1953124$, $x^{r/2}+1 = 5^9+1 = 1953126$である。
+        これらは$57$では割り切れない。
+    \item $\gcd(5^9-1, 57) = 19$, $\gcd(5^9+1, 57) = 3$である。
+\end{enumerate}
+
+失敗する場合。
+\begin{enumerate}
+    \item $N=57$とする。 
+    \item $x = 2$を取る。
+    \item $r = 18$となる。
+    \item $2^9-1 = 511$, $2^9+1 = 513$である。$513/57=9$である。
+    \item $\gcd(2^9-1, 57) = 1$, $\gcd(2^9+1, 57) = 57$である。
+\end{enumerate}
+
+さて、この計算で最もしんどいのは$r$を求める部分であるが、
+これを量子計算機にやらせることができる。
+まず、与えられた$N,x$に対して、ユニタリー演算子
+\begin{align}
+    U_x = \sum_{y=0}^{N-1} \ket{xy \mod N}\bra{y}
+\end{align}
+を考える。
+この固有値と固有ベクトルは
+\begin{align}
+    U_x \ket{u_s} 
+    &= 
+    e^{2\pi i (s/r)} \ket{u_s}, \quad 
+    s = 0, \cdots, r-1 \\
+    %
+    \ket{u_s} 
+    &=
+    \frac{1}{\sqrt{r}}
+    \sum_{k=0}^{r-1}
+    e^{-2\pi i (s/r) k}
+    \ket{x^k \mod N}
+\end{align}
+である。
+実際、
+\begin{align}
+    U_x \ket{u_s}
+    &=
+    \frac{1}{\sqrt{r}}
+    \sum_{y=0}^{N-1} 
+    \sum_{k=0}^{r-1}
+    e^{-2\pi i (s/r) k}
+    \ket{xy \mod N}\braket{y|x^k \mod N} \\
+    &=
+    \frac{1}{\sqrt{r}}
+    \sum_{k=0}^{r-1}
+    e^{-2\pi i (s/r) k}
+    \ket{x^{k+1} \mod N} \\
+    &=
+    \frac{1}{\sqrt{r}}
+    \sum_{k=0}^{r-2}
+    e^{-2\pi i (s/r) k}
+    \ket{x^{k+1} \mod N}
+    +
+    \frac{1}{\sqrt{r}}
+    e^{-2\pi i (s/r) (r-1)}
+    \ket{x^{r} \mod N} \\
+    &=
+    \frac{1}{\sqrt{r}}
+    \sum_{k=0}^{r-2}
+    e^{-2\pi i (s/r) k}
+    \ket{x^{k+1} \mod N}
+    +
+    \frac{1}{\sqrt{r}}
+    e^{-2\pi i (s/r) (r-1)}
+    \ket{1 \mod N} \\
+    &=
+    \frac{1}{\sqrt{r}}
+    \sum_{k=1}^{r-1}
+    e^{-2\pi i (s/r) (k-1)}
+    \ket{x^{k} \mod N}
+    +
+    \frac{1}{\sqrt{r}}
+    e^{-2\pi i (s/r) (r-1)}
+    \ket{x^0 \mod N} \\
+    &=
+    e^{2\pi i (s/r)}
+    \frac{1}{\sqrt{r}}
+    \left(
+        \sum_{k=1}^{r-1}
+        e^{-2\pi i (s/r) k}
+        \ket{x^{k} \mod N}
+        +
+        e^{-2\pi i (s/r) r}
+        \ket{x^0 \mod N}    
+    \right) \\
+    &=
+    e^{2\pi i (s/r)}
+    \frac{1}{\sqrt{r}}
+    \left(
+        \sum_{k=1}^{r-1}
+        e^{-2\pi i (s/r) k}
+        \ket{x^{k} \mod N}
+        +
+        \ket{x^0 \mod N}    
+    \right) \\
+    &=
+    e^{2\pi i (s/r)}
+    \frac{1}{\sqrt{r}}
+    \sum_{k=0}^{r-1}
+    e^{-2\pi i (s/r) k}
+    \ket{x^{k} \mod N} \\
+    &=
+    e^{2\pi i (s/r)}
+    \ket{u_s}
+\end{align}
+となっている。
+従って、$U_x$を量子位相推定することにより、$s/r$を得ることができる。
+
+
+例えば$N=6, x=5$の場合、$r=2$である。
+$U$の行列表示は
+\begin{align}
+    U_5 
+    &= 
+    \sum_{y=0}^{5} \ket{5y \mod 6}\bra{y} \\
+    &=
+    \ket{0 \mod 6}\bra{0}
+    +
+    \ket{5 \mod 6}\bra{1}
+    +
+    \ket{10 \mod 6}\bra{2}
+    +
+    \ket{15 \mod 6}\bra{3}
+    +
+    \ket{20 \mod 6}\bra{4}
+    +
+    \ket{25 \mod 6}\bra{5} \\
+    &=
+    \ket{0}\bra{0}
+    +
+    \ket{5}\bra{1}
+    +
+    \ket{4}\bra{2}
+    +
+    \ket{3}\bra{3}
+    +
+    \ket{2}\bra{4}
+    +
+    \ket{1}\bra{5} \\ 
+    &=
+    \begin{pmatrix}
+        1 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 1 \\
+        0 & 0 & 0 & 0 & 1 & 0 \\
+        0 & 0 & 0 & 1 & 0 & 0 \\
+        0 & 0 & 1 & 0 & 0 & 0 \\
+        0 & 1 & 0 & 0 & 0 & 0
+    \end{pmatrix}
+\end{align}
+である。
+\href{https://ja.wolframalpha.com/input?i=%7B%7B1%2C+0%2C+0%2C+0%2C+0%2C+0%7D%2C+%7B0%2C+0%2C+0%2C+0%2C+0%2C+1%7D%2C+%7B0%2C+0%2C+0%2C+0%2C+1%2C+0%7D%2C+%7B0%2C+0%2C+0%2C+1%2C+0%2C+0%7D%2C+%7B0%2C+0%2C+1%2C+0%2C+0%2C+0%7D%2C+%7B0%2C+1%2C+0%2C+0%2C+0%2C+0%7D%7D}{固有値}
+は$e^{2\pi i \times 0} =1$, $e^{2\pi i (1/2)} = -1$である。（縮退がある）
+状態を測定して後者が得られれば、$r=2$が得られる。
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{誤り訂正}
 \subsection{線形符号による古典誤り訂正}
@@ -1292,7 +2121,6 @@ $w$にはエラーがないか、
 となる。
 
 
-
 \subsection{量子誤り訂正}
 現在知られている量子誤り訂正は、
 線形符号を量子計算版とでもいうべきものである。
@@ -1459,10 +2287,19 @@ $M_1^{1}$の期待値が、1,2番のビットに関する
 \subsection{スタビライザー符号}
 
 
-
+\subsection{surface code}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Summary}
+\section{参考文献}
+\begin{itemize}
+    \item \href{http://mercury.yukawa.kyoto-u.ac.jp/~bussei.kenkyu/wp/wp-content/uploads/6200-064217.pdf}{量子コンピュータの基礎と物理の接点}
+        は藤井さんによる講義ノート。
+    \item \href{http://mmrc.amss.cas.cn/tlb/201702/W020170224608149940643.pdf}{Quantum Computation and Quantum Information}
+        はNielsen, Chuangによる古典的な教科書。10版が無料公開されている。
+    \item \href{https://dojo.qulacs.org/ja/latest/}{Quantum Native Dojo}
+        は株式会社QunaSysが運営しているサイト。
+    \item 古典論理回路については、例えば、「論理回路　高木直史　昭晃堂」
+\end{itemize}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
