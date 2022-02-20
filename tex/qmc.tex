@@ -628,9 +628,28 @@ thimble上の積分は収束性が良く、かつ振動がないので、
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{量子計算のモンテカルロ法への応用}
+\section{Green's function Monte Carlo}
+基底状態エネルギーは
+\begin{align}
+    E = \lim_{t\to \infty} 
+    \frac{\ev{e^{-Ht/2}He^{-Ht/2}}{\psi_0}}{\ev{e^{-Ht}}{\psi_0}}
+\end{align}    
+で与えられる。
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{QUANTUM-CIRCUIT MONTE CARLO}
+\begin{align}
+    e^{-iHt} = \sum_{s} c(s) U(s)
+\end{align}   
+
+\begin{align}
+    \mel{\psi_\text{f}}{e^{iHt}Oe^{-iHt}}{\psi_\text{i}}
+    =
+    \sum_{ss'} c(s) c^*(s')
+    \mel{\psi_\text{f}}{U^\dagger(s') O U(s)}{\psi_\text{i}}
+\end{align}   
 
 
 
