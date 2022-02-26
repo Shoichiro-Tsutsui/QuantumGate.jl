@@ -40,6 +40,9 @@
 %% Hat (used for operator on Hilbert space)
 \newcommand{\hH}{\hat{H}}
 
+%% Hat (used for operator on Hilbert space)
+\newcommand{\vs}{\bm{s}}
+
 
 %% Mathematical symbols
 \DeclareMathOperator{\diag}{diag}
@@ -639,19 +642,414 @@ thimble上の積分は収束性が良く、かつ振動がないので、
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{QUANTUM-CIRCUIT MONTE CARLO}
+\section{Quantum-circuit Monte Carlo}
+ハミルトニアンは時間に依らないとする。
+時間発展演算子を
 \begin{align}
-    e^{-iHt} = \sum_{s} c(s) U(s)
+    e^{-iH \Delta t} = \sum_{s} c(s) U(s)
 \end{align}   
-
+のように分解できたとする。
+$t = N\Delta t$とする。
+\begin{align}
+    e^{-iHt}
+    &=
+    \prod_{i=1}^N e^{-iH \Delta t}
+    =
+    \prod_{i=1}^N \sum_{s_i} c(s_i) U(s_i) \\
+    %
+    e^{+iHt}
+    &=
+    \prod_{i=1}^N e^{+iH \Delta t}
+    =
+    \prod_{i=1}^N \sum_{s'_i} c^*(s'_i) U^\dagger(s'_i)
+\end{align}   
+と展開できる。
+これを用いると、一般に遷移振幅は
 \begin{align}
     \mel{\psi_\text{f}}{e^{iHt}Oe^{-iHt}}{\psi_\text{i}}
-    =
-    \sum_{ss'} c(s) c^*(s')
-    \mel{\psi_\text{f}}{U^\dagger(s') O U(s)}{\psi_\text{i}}
+    &=
+    \prod_{i=1}^N
+    \sum_{s_i s'_i} c(s_i) c^*(s'_i)
+    \mel{\psi_\text{f}}{U^\dagger(s'_i) O U(s_i)}{\psi_\text{i}} \\
+    &=
+    \sum_{s_i s'_i}
+    \prod_{i=1}^N
+    c(s_i) c^*(s'_i)
+    \mel{\psi_\text{f}}{U^\dagger(s'_i) O U(s_i)}{\psi_\text{i}} \\
+    &=
+    \sum_{s_i s'_i}
+    \prod_{i=1}^N
+    c(s_i) c^*(s'_i)
+    \mel{\psi_\text{f}}{O_{\vs}}{\psi_\text{i}} \\
+    %
+    O_{\vs} 
+    &\equiv
+    U^\dagger(s'_1) \dots U^\dagger(s'_N)
+    O
+    U(s_N) \dots U(s_1)
 \end{align}   
+と表される。
+$\prod_{i=1}^N c(s_i) c^*(s'_i)$は複素数であるから、
+\begin{align}
+    \prod_{i=1}^N c(s_i) c^*(s'_i)
+    =
+    \qty|
+        \prod_{i=1}^N c(s_i)c^*(s'_i)
+    |
+    e^{i\theta_{\vs}}
+\end{align}       
+と書けることに注意すれば、
+\begin{align}
+    \mel{\psi_\text{f}}{e^{iHt}Oe^{-iHt}}{\psi_\text{i}}
+    &=
+    \sum_{s_i s'_i}
+    \qty|
+        \prod_{i=1}^N c(s_i)c^*(s'_i)
+    |
+    e^{i\theta_{\vs}}
+    \mel{\psi_\text{f}}{O_{\vs}}{\psi_\text{i}} \\
+    &=
+    \sum_{\vs}
+    P(\vs)
+    C_A^{2N}
+    e^{i\theta_{\vs}}
+    \mel{\psi_\text{f}}{O_{\vs}}{\psi_\text{i}}
+\end{align}
+となる。ただしここで、
+\begin{align}
+    P(s)
+    =
+    \frac{1}{C_A^{2N}}
+    \qty|
+        \prod_{i=1}^N c(s_i)c^*(s'_i)
+    |
+\end{align}
+であり、これは確率分布関数とみなせる。
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Quantum Metropolis Sampling}
+やりたいこと。
+$H$の固有状態を重み$e^{-\beta H}$に従って発生させたい。
+問題点。accept/rejectはナイーブには実装できない。（no cloning theoremのせい）
+これを回避するため4 registerを用意する。
+\begin{align}
+    \ket{\text{acc}}
+    \ket{E^\text{new}}
+    \ket{E^\text{old}}
+    \ket{\psi}
+\end{align}
+$\ket{E^\text{old/new}}$は
+エネルギー$E^\text{old/new}$の情報を持った状態。
+（固有状態ではない）
+$\ket{\text{acc}}$はacceptanceの情報を持つ
+1 qubit registerである。
+
+
+step 0:
+registerを
+\begin{align}
+    \ket{0}
+    \ket{0}
+    \ket{0}
+    \ket{\psi_k}
+\end{align}
+とセットする。
+$\ket{\psi_k}$は$H$のある固有状態である。
+$\ket{\psi_k}$は例えば、
+適当な状態に対してエネルギーを射影測定したものを使う。
+
+step 1:
+$\ket{\psi_k}$の固有エネルギー
+$E_k$の情報をQPE（量子位相推定）によって
+registerに格納する。
+\begin{align}
+    \Phi^\text{old}
+    \ket{0}
+    \ket{0}
+    \ket{0}
+    \ket{\psi_k}
+    =
+    \ket{0}
+    \ket{0}
+    \ket{E_k}
+    \ket{\psi_k}
+\end{align}
+
+step 2:
+ランダムなユニタリー変換$C$
+を当てて状態を更新する。
+\begin{align}
+    C
+    \ket{0}
+    \ket{0}
+    \ket{E_k}
+    \ket{\psi_k}
+    &=
+    \ket{0}
+    \ket{0}
+    \ket{E_k}
+    \sum_p x_{k,p}^{(C)}
+    \ket{\psi_p} \\
+    &=
+    \sum_p x_{k,p}^{(C)}
+    \ket{0}
+    \ket{0}
+    \ket{E_k}
+    \ket{\psi_p}
+\end{align}
+その後、$E_p$の情報をQPEによってregisgterに格納する。
+\begin{align}
+    \Phi^\text{new}
+    \sum_p x_{k,p}^{(C)}
+    \ket{0}
+    \ket{0}
+    \ket{E_k}
+    \ket{\psi_p}
+    =
+    \sum_p x_{k,p}^{(C)}
+    \ket{0}
+    \ket{E_p}
+    \ket{E_k}
+    \ket{\psi_p}
+\end{align}
+
+step 3.
+$\ket{E_p}, \ket{E_k}$をcontroll,
+$\text{acc}$をtargetとする$W$によって
+\begin{align}
+    W
+    \sum_p x_{k,p}^{(C)}
+    \ket{0}
+    \ket{E_p}
+    \ket{E_k}
+    \ket{\psi_p}
+    =
+    \sum_p x_{k,p}^{(C)}
+    \qty(
+        \sqrt{f(p,k)}\ket{1}
+        +
+        \sqrt{1-f(p,k)}\ket{0}
+    )
+    \ket{E_p}
+    \ket{E_k}
+    \ket{\psi_p}
+\end{align}
+とする。ただしここで、
+\begin{align}
+    f(p,k)
+    =
+    \min\qty(1, \, e^{-\beta(E_p-E_k)})
+\end{align}
+である。
+$\ket{\text{acc}}$を測定して、
+$\ket{1}$が観測されたら$\ket{E_\text{new}}$を測定する。
+すると、ある$p$がひとつ選ばれて
+\begin{align}
+    \ket{1}
+    \ket{E_p}
+    \ket{E_k}
+    \ket{\psi_p}
+\end{align}
+に状態が収縮する。
+適当なユニタリー変換によりregisterをリセットし
+\begin{align}
+    \ket{0}
+    \ket{0}
+    \ket{0}
+    \ket{\psi_p}
+\end{align}
+とする。（提案状態がacceptされた。）
+step 1へ進む。
+
+$\ket{0}$が観測されたらstep 4へ進む。
+
+
+step 4:
+ユニタリー演算子$U$を
+\begin{align}
+    U = W \Phi^\text{new} C
+\end{align}
+と定める。
+$U^\dagger$を作用させる。
+\begin{align}
+    &C^\dagger\Phi^{\text{new}\dagger}W^\dagger
+    \sum_p x_{k,p}^{(C)}
+    \ket{0}
+    \ket{E_p}
+    \ket{E_k}
+    \ket{\psi_p} \\
+    =
+    &C^\dagger\Phi^{\text{new}\dagger}
+    \sum_p x_{k,p}^{(C)}
+    \qty(
+        a_{k,p}^0\ket{0}
+        +
+        a_{k,p}^1\ket{1}
+    )
+    \ket{E_p}
+    \ket{E_k}
+    \ket{\psi_p} \\
+    =
+    &C^\dagger
+    \sum_p x_{k,p}^{(C)}
+    \qty(
+        a_{k,p}^0\ket{0}
+        +
+        a_{k,p}^1\ket{1}
+    )
+    \ket{0}
+    \ket{E_k}
+    \ket{\psi_p} \\
+    =
+    &
+    \sum_p x_{k,p}^{(C)}
+    \qty(
+        a_{k,p}^0\ket{0}
+        +
+        a_{k,p}^1\ket{1}
+    )
+    \ket{0}
+    \ket{E_k}
+    \sum_{p'}
+    x_{p',p}^*
+    \ket{\psi_{p'}} \\
+    =
+    &\sum_{pp'} 
+    x_{k,p}
+    x_{p',p}^*
+    \qty(
+        a_{k,p}^0\ket{0}
+        +
+        a_{k,p}^1\ket{1}
+    )
+    \ket{0}
+    \ket{E_k}
+    \ket{\psi_{p'}} \\
+    =
+    &\sum_{p} 
+    \qty(
+        b_{k,p}^0\ket{0}
+        +
+        b_{k,p}^1\ket{1}
+    )
+    \ket{0}
+    \ket{E_k}
+    \ket{\psi_{p}}
+\end{align}
+再び$\Phi^\text{new}$を作用させる。
+\begin{align}
+    \Phi^\text{new}
+    \sum_p
+    \qty(
+        b_{k,p}^0\ket{0}
+        +
+        b_{k,p}^1\ket{1}
+    )
+    \ket{0}
+    \ket{E_k}
+    \ket{\psi_{p}}
+    =
+    \sum_p
+    \qty(
+        b_{k,p}^0\ket{0}
+        +
+        b_{k,p}^1\ket{1}
+    )
+    \ket{E_p}
+    \ket{E_k}
+    \ket{\psi_{p}}
+\end{align}
+$E^\text{new}$を測定する。
+状態は
+\begin{align}
+    \qty(
+        b_{k,p}^0\ket{0}
+        +
+        b_{k,p}^1\ket{1}
+    )
+    \ket{E_p}
+    \ket{E_k}
+    \ket{\psi_{p}}
+\end{align}
+に射影される。
+もし、$E_p = E_k$ならば、
+registerをresetして
+\begin{align}
+    \ket{0}
+    \ket{0}
+    \ket{0}
+    \ket{\psi_{k}}
+\end{align}
+とできる。（提案状態のrejectが行われた。）
+step 1へ進む。
+
+$E_p \neq E_k$ならば、
+$\Phi^{\text{new}\dagger}, U$を作用させ
+\begin{align}
+    U\Phi^{\text{new}\dagger}
+    \qty(
+        b_{k,p}^0\ket{0}
+        +
+        b_{k,p}^1\ket{1}
+    )
+    \ket{E_p}
+    \ket{E_k}
+    \ket{\psi_{p}}
+    &=
+    U
+    \qty(
+        b_{k,p}^0\ket{0}
+        +
+        b_{k,p}^1\ket{1}
+    )
+    \ket{0}
+    \ket{E_k}
+    \ket{\psi_{p}} \\
+    &=
+    W
+    \sum_{p'}
+    x_{pp'}
+    \qty(
+        b_{k,p}^0\ket{0}
+        +
+        b_{k,p}^1\ket{1}
+    )
+    \ket{E_{p'}}
+    \ket{E_k}
+    \ket{\psi_{p'}} \\
+    &=
+    \sum_{p'}
+    x_{pp'}
+    \qty(
+        d_{k,p}^0\ket{0}
+        +
+        d_{k,p}^1\ket{1}
+    )
+    \ket{E_{p'}}
+    \ket{E_k}
+    \ket{\psi_{p'}}
+\end{align}
+acceptance registerを測定する。
+\begin{align}
+    \sum_p
+    x_{pp'}
+    \ket{0 \,\text{or}\, 1}
+    \ket{E_{p'}}
+    \ket{E_k}
+    \ket{\psi_{p'}}
+\end{align}
+これはstep 4の開始前と同様の状態である。
+step 4へ戻る。
+
+rejectするのが大変そうである。
+$H$と可換でない演算子$O$を測定すると、
+そこで確率過程が切れてしまうことにも注意。
+つまりQMSでは、測定するたびにthermalizationをやり直さなければならない。
+
+普通のハミルトニアン(エルミート)ならいつでも使える。
+特に、古典計算機上のQMCで符号問題が発生する場合にも使える。
+$C$はglobal updateっぽいので、その点も良さげである。
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
